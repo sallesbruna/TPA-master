@@ -1,5 +1,6 @@
 package exercicio;
 
+import java.util.Date;
 import java.util.List;
 import corejava.Console;
 
@@ -35,12 +36,15 @@ public class Principal
 				{
 					nome = Console.readLine('\n' + 
 						"Informe o nome do produto: ");
-					dataCadastro = Console.readLine(
-						"Informe a data de cadastramento do produto: ");
+					dataCadastro = Util.dateToStr(new java.sql.Date(new Date().getTime()));
 					nomeCategoria = Console.readLine(
 							"Informe a categoria do produto: ");
 
-					umaCategoria = Categoria.criarCategoria(nomeCategoria);
+					Result<Categoria> categoriaResult = categoriaAppService.recuperaCategoriaPorNomeOuInsere(nomeCategoria);
+					if(categoriaResult.hasMessage()){
+						System.out.println(categoriaResult.getMessage());
+					}
+					umaCategoria = categoriaResult.getPayload();
 					umProduto = Produto.criarProduto(nome, Util.strToDate(dataCadastro), umaCategoria);
 
 					long numero = produtoAppService.inclui(umProduto);

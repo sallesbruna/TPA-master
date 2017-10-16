@@ -42,8 +42,8 @@ public class Produto
 	{	return nome;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER, optional = false)
-	@JoinColumn(name="CATEGORIA_ID")
+	@ManyToOne(fetch = FetchType.EAGER, optional = false, cascade = CascadeType.ALL)
+	@JoinColumn(name="CATEGORIA_ID", nullable = false)
 	public Categoria getCategoria(){
 		return categoria;
 	}

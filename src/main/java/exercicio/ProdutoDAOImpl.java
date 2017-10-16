@@ -8,7 +8,7 @@ import javax.persistence.Query;
 
 public class ProdutoDAOImpl implements ProdutoDAO
 {	
-	public long inclui(Produto umProduto) 
+	public Long inclui(Produto umProduto)
 	{	try
 		{	EntityManager em = JPAUtil.getEntityManager();
 
@@ -39,31 +39,28 @@ public class ProdutoDAOImpl implements ProdutoDAO
 		}
 	}
 
-	public void exclui(long id) 
+	public void exclui(Long id)
 		throws ObjetoNaoEncontradoException 
 	{	try
 		{	EntityManager em = JPAUtil.getEntityManager();
-		
-			Produto produto = em.find(Produto.class, id, LockModeType.PESSIMISTIC_WRITE);
-			
-			if(produto == null)
-			{	throw new ObjetoNaoEncontradoException();
-			}
-	
-			em.remove(produto);
+
+			Query query = em.createQuery("delete from exercicio.Produto p where p.id = :id");
+			query.setParameter("id", id);
+
+			int result = query.executeUpdate();
 		}
 		catch(RuntimeException e)
 		{	throw new InfraestruturaException(e);
 		}
 	}
 
-	public Produto recuperaUmProduto(long id) 
+	public Produto recuperaUmProduto(Long id)
 		throws ObjetoNaoEncontradoException 
 	{	try
 		{	EntityManager em = JPAUtil.getEntityManager();
 
 			Produto umProduto = (Produto)em
-				.find(Produto.class, new Long(id));
+				.find(Produto.class, id);
 			
 			if (umProduto == null)
 			{	throw new ObjetoNaoEncontradoException();

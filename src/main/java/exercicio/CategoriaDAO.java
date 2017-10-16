@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface CategoriaDAO
 {
-    long inclui(Categoria umaCategoria);
+    Long inclui(Categoria umaCategoria);
 
     void altera(Categoria umaCategoria)
             throws ObjetoNaoEncontradoException;

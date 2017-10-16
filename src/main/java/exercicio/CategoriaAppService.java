@@ -137,28 +137,26 @@ public class CategoriaAppService
 
     public Result<Categoria> recuperaCategoriaPorNomeOuInsere(String nome){
 
-        Categoria categoria;
+        Categoria categoria = null;
         String mensagem = null;
 
         try {
             categoria = recuperaCategoriaPorNome(nome);
         } catch (CategoriaNaoEncontradaException e) {
 
-            JPAUtil.beginTransaction();
-
             try{
 
-                categoria = Categoria.criarCategoria("nome");
+                JPAUtil.beginTransaction();
+                Long id = inclui(Categoria.criarCategoria(nome));
+
+                categoria = CategoriaDAO.recuperaUmaCategoria(id);
 
                 JPAUtil.commitTransaction();
-            }
-            finally {
+            } catch (ObjetoNaoEncontradoException e1) {
+
+            } finally {
                 JPAUtil.rollbackTransaction();
             }
-
-            //INCLUI NOVA CATEGORIA SE CATEGORIA COM NOME FORNECIDO NAO EXISTIR
-            inclui(categoria);
-            //----
 
             mensagem = "Nova categoria adicionada!";
         }
@@ -178,10 +176,6 @@ public class CategoriaAppService
         catch(ObjetoNaoEncontradoException e)
         {
             throw new CategoriaNaoEncontradaException("Categoria não encontrada");
-        }
-        finally
-        {
-            JPAUtil.closeEntityManager();
         }
     }
 

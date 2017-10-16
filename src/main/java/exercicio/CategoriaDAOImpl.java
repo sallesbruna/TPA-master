@@ -10,7 +10,7 @@ import javax.persistence.Query;
 
 public class CategoriaDAOImpl implements CategoriaDAO
 {
-    public long inclui(Categoria umaCategoria)
+    public Long inclui(Categoria umaCategoria)
     {	try
         {
             EntityManager em = JPAUtil.getEntityManager();
@@ -50,14 +50,10 @@ public class CategoriaDAOImpl implements CategoriaDAO
         {
             EntityManager em = JPAUtil.getEntityManager();
 
-            Categoria Categoria = em.find(Categoria.class, id, LockModeType.PESSIMISTIC_WRITE);
+            Query query = em.createQuery("delete from exercicio.Categoria p where p.id = :id");
+            query.setParameter("id", id);
 
-            if(Categoria == null)
-            {
-                throw new ObjetoNaoEncontradoException();
-            }
-
-            em.remove(Categoria);
+            int result = query.executeUpdate();
         }
         catch(RuntimeException e)
         {

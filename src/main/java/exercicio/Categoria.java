@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Table(name="CATEGORIA")
 public class Categoria {
 
-    private long id;
+    private Long id;
     private String nome;
     private List<Produto> produtos;
 
