@@ -31,10 +31,6 @@ public class Categoria {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     @Column(name="NOME")
     public String getNome() {
         return nome;
@@ -44,9 +40,15 @@ public class Categoria {
         this.nome = nome;
     }
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "CATEGORIA_ID")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name="CATEGORIA_ID")
     public List<Produto> getProdutos(){
         return produtos;
+    }
+
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public void setProdutos(List<Produto> produtos){

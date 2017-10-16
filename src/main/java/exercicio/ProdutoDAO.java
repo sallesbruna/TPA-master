@@ -16,4 +16,7 @@ public interface ProdutoDAO
 		throws ObjetoNaoEncontradoException; 
 	
 	public List<Produto> recuperaProdutos();
+
+	public List<Produto> recuperaProdutosPorCategoria(Long categoriaId) throws ObjetoNaoEncontradoException;
+
 }

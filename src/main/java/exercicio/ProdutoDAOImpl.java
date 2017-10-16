@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
+import javax.persistence.Query;
 
 public class ProdutoDAOImpl implements ProdutoDAO
 {	
@@ -92,6 +93,29 @@ public class ProdutoDAOImpl implements ProdutoDAO
 		{	throw new InfraestruturaException(e);
 		}
 	}
+
+
+	public List<Produto> recuperaProdutosPorCategoria(Long categoriaId) throws ObjetoNaoEncontradoException {
+		try
+		{
+			EntityManager em = JPAUtil.getEntityManager();
+
+			Query query = em.createQuery("select p from PRODUTO p where p.Categoria.Id = :oNome");
+			query.setParameter("oNome", categoriaId);
+
+			List<Produto> list = query.getResultList();
+			if(list.isEmpty()){
+				throw new ObjetoNaoEncontradoException();
+			}
+			return list;
+		}
+		catch(RuntimeException e)
+		{
+			throw new InfraestruturaException(e);
+		}
+	}
+
+
 	
 	@SuppressWarnings("unchecked")
 	public List<Produto> recuperaProdutos()
@@ -99,8 +123,7 @@ public class ProdutoDAOImpl implements ProdutoDAO
 		{	EntityManager em = JPAUtil.getEntityManager();
 
 			List<Produto> produtos = em
-				.createQuery("select p from Produto p " +
-						     "order by p.id asc")
+				.createQuery("select p from exercicio.Produto p")
 				.getResultList();
 
 			return produtos;

@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
+import javax.persistence.Query;
 
 public class CategoriaDAOImpl implements CategoriaDAO
 {
@@ -71,6 +72,34 @@ public class CategoriaDAOImpl implements CategoriaDAO
             EntityManager em = JPAUtil.getEntityManager();
 
             Categoria umaCategoria = (Categoria)em.find(Categoria.class, id);
+
+            if (umaCategoria == null)
+            {	throw new ObjetoNaoEncontradoException();
+            }
+
+            return umaCategoria;
+        }
+        catch(RuntimeException e)
+        {
+            throw new InfraestruturaException(e);
+        }
+    }
+
+    @Override
+    public Categoria recuperaUmaCategoriaPorNome(String nome) throws ObjetoNaoEncontradoException {
+        try
+        {
+            EntityManager em = JPAUtil.getEntityManager();
+
+            Query query = em.createQuery("select p from CATEGORIA p where p.NOME = :oNome");
+            query.setParameter("oNome", nome);
+
+            List list = query.getResultList();
+            if(list.isEmpty()){
+                throw new ObjetoNaoEncontradoException();
+            }
+
+            Categoria umaCategoria = (Categoria)list.get(0);
 
             if (umaCategoria == null)
             {	throw new ObjetoNaoEncontradoException();

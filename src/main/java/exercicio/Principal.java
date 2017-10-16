@@ -17,20 +17,21 @@ public class Principal
 
 		boolean continua = true;
 		while (continua)
-		{	System.out.println('\n' + "O que você deseja fazer?");
-			System.out.println('\n' + "1. Cadastrar um produto");
-			System.out.println("2. Alterar um produto");
-			System.out.println("3. Remover um produto");
-			System.out.println("4. Listar todos os produtos");
-			System.out.println("5. Listar produtos por categoria");
-			System.out.println("6. Cadastrar categoria");
-			System.out.println("7. Sair");
+		{	System.out.println("\n O que você deseja fazer?");
+			System.out.println("\n 1. Cadastrar um produto");
+			System.out.println("\n 2. Alterar um produto");
+			System.out.println("\n 3. Remover um produto");
+			System.out.println("\n 4. Listar todos os produtos");
+			System.out.println("\n 5. Listar produtos por categoria");
+			System.out.println("\n 6. Cadastrar categoria");
+			System.out.println("\n 7. Sair");
 						
 			int opcao = Console.readInt('\n' + 
 							"Digite um número entre 1 e 7:");
 					
 			switch (opcao)
-			{	case 1:
+			{
+				case 1:
 				{
 					nome = Console.readLine('\n' + 
 						"Informe o nome do produto: ");
@@ -95,8 +96,12 @@ public class Principal
 							String novaCategoria = Console.
 									readLine("Digite a nova categoria: ");
 
-							Categoria categoria = categoriaAppService.recuperaUmaCategoria()
-							umProduto.setCategoria(novaCategoria);
+							Result<Categoria> categoriaResult = categoriaAppService.recuperaCategoriaPorNomeOuInsere(novaCategoria);
+							if(categoriaResult.hasMessage()){
+								System.out.println(categoriaResult.getMessage());
+							}
+							Categoria categoria = categoriaResult.getPayload();
+							umProduto.setCategoria(categoria);
 
 							try
 							{	produtoAppService.altera(umProduto);
@@ -162,79 +167,38 @@ public class Principal
 
 					for (Produto produto : produtos)
 					{	
-						System.out.println('\n' + 
-							"Id = " + produto.getId() +
-							"  Nome = " + produto.getNome() +
-							"  Lance mínimo = " + produto.getLanceMinimo() +
-							"  Data Cadastro = " + produto.getDataCadastroMasc());
-						if(produto.getUltimoLance() > 0)
-						{
-							System.out.print("    Ultimo lance = " + produto.getUltimoLance());
-						}
+						System.out.println(produto.toString());
 					}
 					
 					break;
 				}
+
+
 				case 5:
 				{
-					int resposta = Console.readInt('\n' + 
-							"Digite o número do produto que você deseja dar o lance : ");
-											
-						try
-						{	umProduto = produtoAppService.recuperaUmProduto(resposta);
-						}
-						catch(ProdutoNaoEncontradoException e)
-						{	System.out.println('\n' + e.getMessage());
-							break;
-						}
-						
-						double ultimoLance = umProduto.getUltimoLance();
-						if(ultimoLance < 0)
-						{
-							System.out.println('\n' + 
-									"Número = " + umProduto.getId() + 
-								"    Nome = " + umProduto.getNome() +
-								"    Lance Mínimo = " + umProduto.getLanceMinimo());
-						}
-						else
-						{
-							System.out.println('\n' + 
-									"Número = " + umProduto.getId() + 
-								"    Nome = " + umProduto.getNome() +
-								"    Ultimo lance = " + ultimoLance);
-						}
-						double valor = Console.readDouble('\n' + "Qual é o valor do lance?");
-						
-						while(valor < ultimoLance)
-						{
-							if(ultimoLance > 0)
-								System.out.println("O valor deve ser maior que o ultimo lance.");
-							else
-								System.out.println("O valor deve ser maior que o lance mínimo.");
-							
-							valor = Console.readDouble('\n' + "Qual é o valor do lance?");
-						}
-						
-						String dataLance = Console.readLine(
-								"Informe a data que foi dado o lance: ");
-						Categoria categoria = new Categoria(valor, Util.strToDate(dataLance), umProduto.getId());
-						umProduto.setUltimoLance(valor);
-						
-						try
-						{
-							produtoAppService.altera(umProduto, categoria);
-						}catch(ProdutoNaoEncontradoException e)
-						{	System.out.println('\n' + e.getMessage());
-						}
-						
-						System.out.println("Lance com id foi salvo com sucesso.");
-						break;
+					String novoNome = Console.readLine("Digite o nome para a Categoria: ");
+					List<Produto> produtos = produtoAppService.recuperaProdutosPorCategoria(novoNome);
+
+					for (Produto produto : produtos)
+					{
+						System.out.println(produto.toString());
+					}
+
+					break;
 						
 				}
+
+
+
 				case 6:
-				{	continua = false;
+				{
+					String novoNome = Console.readLine("Digite o novo nome para a Categoria: ");
+					Categoria c = Categoria.criarCategoria(novoNome);
+					categoriaAppService.inclui(c);
+
 					break;
 				}
+
 
 				default:
 					System.out.println('\n' + "Opção inválida!");

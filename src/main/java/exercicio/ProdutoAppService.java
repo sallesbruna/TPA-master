@@ -1,5 +1,8 @@
 package exercicio;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import java.util.Collections;
 import java.util.List;
 
 public class ProdutoAppService
@@ -163,4 +166,30 @@ public class ProdutoAppService
 		{   JPAUtil.closeEntityManager();
 		}
 	}
+
+
+	public List<Produto> recuperaProdutosPorCategoria(String nome) {
+		Categoria c = null;
+
+		try {
+			c = categoriaAppService.recuperaCategoriaPorNome(nome);
+		} catch (CategoriaNaoEncontradaException e) {
+			return Collections.emptyList();
+		}
+
+		Long categoriaId = c.getId();
+
+		List<Produto> produtosQuePossuemCategoriaEspecificada = null;
+		try {
+			produtosQuePossuemCategoriaEspecificada = produtoDAO.recuperaProdutosPorCategoria(categoriaId);
+		} catch (ObjetoNaoEncontradoException e) {
+			return Collections.emptyList();
+		}
+
+		return produtosQuePossuemCategoriaEspecificada;
+	}
+
+
+
+
 }

@@ -127,8 +127,47 @@ public class CategoriaAppService
         }
     }
 
-    public List<Categoria> recuperaCategorias()
+
+    public Result<Categoria> recuperaCategoriaPorNomeOuInsere(String nome){
+
+        Categoria categoria;
+        String mensagem = null;
+
+        try {
+            categoria = recuperaCategoriaPorNome(nome);
+        } catch (CategoriaNaoEncontradaException e) {
+            categoria = Categoria.criarCategoria("nome");
+
+            //INCLUI NOVA CATEGORIA SE CATEGORIA COM NOME FORNECIDO NAO EXISTIR
+            inclui(categoria);
+            //----
+
+            mensagem = "Nova categoria adicionada!";
+        }
+
+        return mensagem == null
+            ? new Result<>(categoria)
+            : new Result<>(categoria, mensagem);
+    }
+
+    public Categoria recuperaCategoriaPorNome(String nome) throws CategoriaNaoEncontradaException
     {
+        try
+        {
+            Categoria umaCategoria = CategoriaDAO.recuperaUmaCategoriaPorNome(nome);
+            return umaCategoria;
+        }
+        catch(ObjetoNaoEncontradoException e)
+        {
+            throw new CategoriaNaoEncontradaException("Categoria não encontrada");
+        }
+        finally
+        {
+            JPAUtil.closeEntityManager();
+        }
+    }
+
+    public List<Categoria> recuperaCategorias(){
         try
         {
             return CategoriaDAO.recuperaCategorias();

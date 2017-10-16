@@ -36,13 +36,14 @@ public class Produto
 	public Long getId()
 	{	return id;
 	}
-	
+
+	@Column(name="NOME")
 	public String getNome()
 	{	return nome;
 	}
 
-	@Column (name="CATEGORIA_ID")
 	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+	@JoinColumn(name="CATEGORIA_ID")
 	public Categoria getCategoria(){
 		return categoria;
 	}
