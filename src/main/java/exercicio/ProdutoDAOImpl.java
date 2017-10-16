@@ -100,7 +100,7 @@ public class ProdutoDAOImpl implements ProdutoDAO
 		{
 			EntityManager em = JPAUtil.getEntityManager();
 
-			Query query = em.createQuery("select p from PRODUTO p where p.Categoria.Id = :oNome");
+			Query query = em.createQuery("select p from exercicio.Produto p where p.categoria.id = :oNome");
 			query.setParameter("oNome", categoriaId);
 
 			List<Produto> list = query.getResultList();

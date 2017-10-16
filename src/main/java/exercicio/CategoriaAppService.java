@@ -17,27 +17,27 @@ public class CategoriaAppService
             // NENHUMA VALIDAÇÃO ESTÁ SENDO REALIZADA AQUI!!!
 
 
-
-		/*==>*/		JPAUtil.beginTransaction();
+		    JPAUtil.beginTransaction();
             ProdutoAppService.semaforo++;
 
             numero = CategoriaDAO.inclui(umaCategoria);
             if(ProdutoAppService.semaforo == 0)
             {
-		/*==>*/			JPAUtil.commitTransaction();
+		        JPAUtil.commitTransaction();
                 ProdutoAppService.semaforo--;
             }
             return numero;
 
         }
         catch(InfraestruturaException e)
-        {	try
-	/*==>*/		{
-            JPAUtil.rollbackTransaction();
-        }
-        catch(InfraestruturaException ie)
         {
-        }
+            try
+            {
+                JPAUtil.rollbackTransaction();
+            }
+            catch(InfraestruturaException ie)
+            {
+            }
 
             throw e;
         }
@@ -49,73 +49,80 @@ public class CategoriaAppService
 
     }
 
-    public void altera(Categoria umaCategoria)
-            throws CategoriaNaoEncontradaException
-    {	try
-    {	JPAUtil.beginTransaction();
-        JPAUtil.semaforo++;
-        CategoriaDAO.altera(umaCategoria);
-
-        JPAUtil.commitTransaction();
-
-        JPAUtil.semaforo--;
-    }
-    catch(ObjetoNaoEncontradoException e)
-    {
-        JPAUtil.rollbackTransaction();
-
-        throw new CategoriaNaoEncontradaException("Categoria não encontrada");
-    }
-    catch(InfraestruturaException e)
-    {	try
-    {	JPAUtil.rollbackTransaction();
-    }
-    catch(InfraestruturaException ie)
-    {
-    }
-
-        throw e;
-    }
-    finally
-    {   JPAUtil.closeEntityManager();
-    }
-    }
-
-    public void exclui(long numero)
-            throws CategoriaNaoEncontradaException
-    {	try
-    {	JPAUtil.beginTransaction();
-
-        CategoriaDAO.exclui(numero);
-
-        JPAUtil.commitTransaction();
-    }
-    catch(ObjetoNaoEncontradoException e)
-    {
-        JPAUtil.rollbackTransaction();
-
-        throw new CategoriaNaoEncontradaException("Categoria não encontrada");
-    }
-    catch(InfraestruturaException e)
-    {	try
-    {	JPAUtil.rollbackTransaction();
-    }
-    catch(InfraestruturaException ie)
-    {
-    }
-
-        throw e;
-    }
-    finally
-    {   JPAUtil.closeEntityManager();
-    }
-    }
-
-    public Categoria recuperaUmaCategoria(long numero)
-            throws CategoriaNaoEncontradaException
+    public void altera(Categoria umaCategoria) throws CategoriaNaoEncontradaException
     {
         try
-        {	Categoria umaCategoria = CategoriaDAO.recuperaUmaCategoria(numero);
+        {
+            JPAUtil.beginTransaction();
+            JPAUtil.semaforo++;
+            CategoriaDAO.altera(umaCategoria);
+
+            JPAUtil.commitTransaction();
+
+            JPAUtil.semaforo--;
+        }
+        catch(ObjetoNaoEncontradoException e)
+        {
+            JPAUtil.rollbackTransaction();
+
+            throw new CategoriaNaoEncontradaException("Categoria não encontrada");
+        }
+        catch(InfraestruturaException e)
+        {
+            try
+            {
+                JPAUtil.rollbackTransaction();
+            }
+            catch(InfraestruturaException ie)
+            {
+            }
+
+        throw e;
+    }
+    finally
+    {   JPAUtil.closeEntityManager();
+    }
+    }
+
+    public void exclui(long numero) throws CategoriaNaoEncontradaException
+    {
+        try
+        {
+            JPAUtil.beginTransaction();
+
+            CategoriaDAO.exclui(numero);
+
+            JPAUtil.commitTransaction();
+        }
+        catch(ObjetoNaoEncontradoException e)
+        {
+            JPAUtil.rollbackTransaction();
+
+            throw new CategoriaNaoEncontradaException("Categoria não encontrada");
+        }
+        catch(InfraestruturaException e)
+        {
+            try
+            {
+                JPAUtil.rollbackTransaction();
+            }
+            catch(InfraestruturaException ie)
+            {
+            }
+
+        throw e;
+        }
+        finally
+        {
+            JPAUtil.closeEntityManager();
+        }
+    }
+
+    public Categoria recuperaUmaCategoria(long numero) throws CategoriaNaoEncontradaException
+    {
+        try
+        {
+            Categoria umaCategoria = CategoriaDAO.recuperaUmaCategoria(numero);
 
             return umaCategoria;
         }
@@ -136,7 +143,18 @@ public class CategoriaAppService
         try {
             categoria = recuperaCategoriaPorNome(nome);
         } catch (CategoriaNaoEncontradaException e) {
-            categoria = Categoria.criarCategoria("nome");
+
+            JPAUtil.beginTransaction();
+
+            try{
+
+                categoria = Categoria.criarCategoria("nome");
+
+                JPAUtil.commitTransaction();
+            }
+            finally {
+                JPAUtil.rollbackTransaction();
+            }
 
             //INCLUI NOVA CATEGORIA SE CATEGORIA COM NOME FORNECIDO NAO EXISTIR
             inclui(categoria);

@@ -95,7 +95,8 @@ public class Produto
 
 	@Override
 	public String toString(){
-		return "{ Número = " + getId()  +
+		return "{ " +
+				"\n Número = " + getId()  +
 				"\n Nome = " + getNome() +
 				"\n Categoria = " + getCategoria().toString() +
 				"\n Data Cadastro = " + getDataCadastro() +

@@ -91,7 +91,7 @@ public class CategoriaDAOImpl implements CategoriaDAO
         {
             EntityManager em = JPAUtil.getEntityManager();
 
-            Query query = em.createQuery("select p from CATEGORIA p where p.NOME = :oNome");
+            Query query = em.createQuery("select p from exercicio.Categoria p where p.nome = :oNome");
             query.setParameter("oNome", nome);
 
             List list = query.getResultList();
@@ -142,7 +142,7 @@ public class CategoriaDAOImpl implements CategoriaDAO
             EntityManager em = JPAUtil.getEntityManager();
 
             List<Categoria> categorias = em
-                    .createQuery("select p from CATEGORIA p order by p.id asc")
+                    .createQuery("select p from exercicio.Categoria p order by p.id asc")
                     .getResultList();
 
             return categorias;

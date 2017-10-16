@@ -16,13 +16,13 @@ public class ProdutoAppService
 	}
 
 	public long inclui(Produto umProduto) 
-	{	try
+	{
+		try
 		{	
 			// NENHUMA VALIDAÇÃO ESTÁ SENDO REALIZADA AQUI!!!
 		
 /*==>*/		JPAUtil.beginTransaction();
 			
-
 			long numero = produtoDAO.inclui(umProduto);
 
 /*==>*/		JPAUtil.commitTransaction();
@@ -30,7 +30,8 @@ public class ProdutoAppService
 			return numero;
 		} 
 		catch(InfraestruturaException e)
-		{	try
+		{
+			try
 /*==>*/		{
 				JPAUtil.rollbackTransaction();
 			}
@@ -46,10 +47,11 @@ public class ProdutoAppService
 		}
 	}
 
-	public void altera(Produto umProduto)
-		throws ProdutoNaoEncontradoException
-	{	try
-		{	JPAUtil.beginTransaction();
+	public void altera(Produto umProduto) throws ProdutoNaoEncontradoException
+	{
+		try
+		{
+			JPAUtil.beginTransaction();
 			produtoDAO.altera(umProduto);
 
 			JPAUtil.commitTransaction();
@@ -62,8 +64,10 @@ public class ProdutoAppService
 			throw new ProdutoNaoEncontradoException("Produto não encontrado");
 		}
 		catch(InfraestruturaException e)
-		{	try
-			{	JPAUtil.rollbackTransaction();
+		{
+			try
+			{
+				JPAUtil.rollbackTransaction();
 			}
 			catch(InfraestruturaException ie)
 			{				
@@ -72,48 +76,54 @@ public class ProdutoAppService
 		    throw e;
 		}
 		finally
-		{   JPAUtil.closeEntityManager();
+		{
+			JPAUtil.closeEntityManager();
 		}
 	}
 	
-	public void altera(Produto umProduto, Categoria categoria)
-			throws ProdutoNaoEncontradoException
-		{	try
-			{	JPAUtil.beginTransaction();
-				semaforo++;
-				categoriaAppService.inclui(categoria);
-				
-				produtoDAO.altera(umProduto);
-				
-				JPAUtil.commitTransaction();
-				semaforo--;
-			} 
-			catch(ObjetoNaoEncontradoException e)
-			{	
-				JPAUtil.rollbackTransaction();
+	public void altera(Produto umProduto, Categoria categoria) throws ProdutoNaoEncontradoException
+	{
+		try
+		{
+			JPAUtil.beginTransaction();
+			semaforo++;
+			categoriaAppService.inclui(categoria);
 
-				throw new ProdutoNaoEncontradoException("Produto não encontrado");
-			}
-			catch(InfraestruturaException e)
-			{	try
-				{	JPAUtil.rollbackTransaction();
-				}
-				catch(InfraestruturaException ie)
-				{				
-				}
+			produtoDAO.altera(umProduto);
 
-			    throw e;
-			}
-			finally
-			{   if(semaforo == 0)
-					JPAUtil.closeEntityManager();
-			}
+			JPAUtil.commitTransaction();
+			semaforo--;
 		}
+		catch(ObjetoNaoEncontradoException e)
+		{
+			JPAUtil.rollbackTransaction();
+
+			throw new ProdutoNaoEncontradoException("Produto não encontrado");
+		}
+		catch(InfraestruturaException e)
+		{
+			try
+			{
+				JPAUtil.rollbackTransaction();
+			}
+			catch(InfraestruturaException ie)
+			{
+			}
+
+			throw e;
+		}
+		finally
+		{
+			if(semaforo == 0)
+				JPAUtil.closeEntityManager();
+		}
+	}
 		
-	public void exclui(long numero) 
-		throws ProdutoNaoEncontradoException
-	{	try
-		{	JPAUtil.beginTransaction();
+	public void exclui(long numero) throws ProdutoNaoEncontradoException
+	{
+		try
+		{
+			JPAUtil.beginTransaction();
 
 			produtoDAO.exclui(numero);
 
@@ -127,7 +137,8 @@ public class ProdutoAppService
 		}
 		catch(InfraestruturaException e)
 		{	try
-			{	JPAUtil.rollbackTransaction();
+			{
+				JPAUtil.rollbackTransaction();
 			}
 			catch(InfraestruturaException ie)
 			{				
@@ -136,34 +147,38 @@ public class ProdutoAppService
 		    throw e;
 		}
 		finally
-		{   JPAUtil.closeEntityManager();
+		{
+			JPAUtil.closeEntityManager();
 		}
 	}
 
-	public Produto recuperaUmProduto(long numero) 
-		throws ProdutoNaoEncontradoException
-	{	
+	public Produto recuperaUmProduto(long numero) throws ProdutoNaoEncontradoException {
 		try
-		{	Produto umProduto = produtoDAO.recuperaUmProduto(numero);
+		{
+			Produto umProduto = produtoDAO.recuperaUmProduto(numero);
 			
 			return umProduto;
 		} 
 		catch(ObjetoNaoEncontradoException e)
-		{	throw new ProdutoNaoEncontradoException("Produto não encontrado");
+		{
+			throw new ProdutoNaoEncontradoException("Produto não encontrado");
 		}
 		finally
-		{   JPAUtil.closeEntityManager();
+		{
+			JPAUtil.closeEntityManager();
 		}
 	}
 
 	public List<Produto> recuperaProdutos() 
 	{	try
-		{	List<Produto> produtos = produtoDAO.recuperaProdutos();
+		{
+			List<Produto> produtos = produtoDAO.recuperaProdutos();
 
 			return produtos;
 		} 
 		finally
-		{   JPAUtil.closeEntityManager();
+		{
+			JPAUtil.closeEntityManager();
 		}
 	}
 
