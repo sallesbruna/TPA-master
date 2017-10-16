@@ -11,7 +11,7 @@ public class JPAUtil
 			new ThreadLocal<EntityManager>();
 	private static final ThreadLocal<EntityTransaction> threadTransaction = 
 			new ThreadLocal<EntityTransaction>();
-	public static int semaforo = 0;
+	public static ThreadLocal<Integer> semaforo = new ThreadLocal<Integer>();
 	
 	static 
 	{	try
@@ -24,89 +24,100 @@ public class JPAUtil
 		}
 	}
 
-	public static void beginTransaction() 
+	public static void beginTransaction()
 	{	//System.out.println("Vai criar transacao");
-		
+
 		EntityTransaction tx = threadTransaction.get();
-		try 
-		{	if(semaforo == 0) {
-				if (tx == null) 
-				{	tx = getEntityManager().getTransaction();
-					tx.begin();
-					threadTransaction.set(tx);
-					//System.out.println("Criou transacao");
-				}
-				else
-				{	//System.out.println("Nao criou transacao");
-				}
+		if(semaforo.get()==null)
+			semaforo.set(1);
+		else
+			semaforo.set(semaforo.get()+1);
+		try
+		{
+			if (tx == null)
+			{	tx = getEntityManager().getTransaction();
+				tx.begin();
+				threadTransaction.set(tx);
+				//System.out.println("Criou transacao");
 			}
-		} 
-		catch (RuntimeException ex) 
+			else
+			{	//System.out.println("Nao criou transacao");
+			}
+
+		}
+		catch (RuntimeException ex)
 		{	throw new InfraestruturaException(ex);
 		}
 	}
-
-	public static EntityManager getEntityManager() 
+	public static EntityManager getEntityManager()
 	{	// System.out.println("Abriu ou recuperou sessão");
-	
+
 		EntityManager s = threadEntityManager.get();
 		// Abre uma nova Sessão, se a thread ainda não possui uma.
-		try 
-		{	if (s == null) 
-			{	s = emf.createEntityManager();
-				threadEntityManager.set(s);
-				//System.out.println("criou sessao");
-			}
-		} 
-		catch (RuntimeException ex) 
+		try
+		{	if (s == null)
+		{	s = emf.createEntityManager();
+			threadEntityManager.set(s);
+			//System.out.println("criou sessao");
+		}
+		}
+		catch (RuntimeException ex)
 		{	throw new InfraestruturaException(ex);
 		}
 		return s;
 	}
 
-	public static void commitTransaction() 
+	public static void commitTransaction()
 	{	EntityTransaction tx = threadTransaction.get();
-		try 
-		{	if ( tx != null && tx.isActive())
+		try
+		{	if( semaforo.get() == 1){
+			if ( tx != null && tx.isActive())
 			{	tx.commit();
-				//System.out.println("Comitou transacao");
+				System.out.println("Comitou transacao");
 			}
 			threadTransaction.set(null);
-		} 
-		catch (RuntimeException ex) 
-		{	try
-			{	rollbackTransaction();
+		}
+			if(!semaforo.equals(null)) {
+				semaforo.set(semaforo.get() - 1);
+				if(semaforo.get() == 0)
+					semaforo.set(null);
 			}
-			catch(RuntimeException e)
-			{}
-			
+		}
+		catch (RuntimeException ex)
+		{	try
+		{	rollbackTransaction();
+		}
+		catch(RuntimeException e)
+		{}
+
 			throw new InfraestruturaException(ex);
 		}
 	}
 
-	public static void rollbackTransaction() 
+	public static void rollbackTransaction()
 	{	System.out.println("Vai efetuar rollback de transacao");
-	
+
 		EntityTransaction tx = threadTransaction.get();
-		try 
+		try
 		{	threadTransaction.set(null);
-			if ( tx != null && tx.isActive()) 
+			if ( tx != null && tx.isActive())
 			{	tx.rollback();
 			}
-		} 
-		catch (RuntimeException ex) 
+		}
+		catch (RuntimeException ex)
 		{	throw new InfraestruturaException(ex);
-		} 
-		finally 
+		}
+		finally
 		{	closeEntityManager();
 		}
 	}
 
-	public static void closeEntityManager() 
+	public static void closeEntityManager()
 	{	//System.out.println("Vai fechar sessão");
 
-		try 
-		{	EntityManager s = threadEntityManager.get();
+		try
+		{	if(semaforo.get() == null) {
+			EntityManager s = threadEntityManager.get();
 			threadEntityManager.set(null);
 			if (s != null && s.isOpen())
 			{	s.close();
@@ -117,10 +128,11 @@ public class JPAUtil
 			if ( tx != null && tx.isActive())
 			{	rollbackTransaction();
 				throw new RuntimeException("EntityManager sendo fechado " +
-						                   "com transação ativa.");
+						"com transação ativa.");
 			}
-		} 	
-		catch (RuntimeException ex) 
+		}
+		}
+		catch (RuntimeException ex)
 		{	throw new InfraestruturaException(ex);
 		}
 	}

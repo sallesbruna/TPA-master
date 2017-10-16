@@ -45,7 +45,7 @@ public class Principal
 						System.out.println(categoriaResult.getMessage());
 					}
 					umaCategoria = categoriaResult.getPayload();
-					umProduto = Produto.criarProduto(nome, Util.strToDate(dataCadastro), umaCategoria);
+					umProduto = Produto.criarProduto(nome, Util.strToDate(dataCadastro), umaCategoria.getId());
 
 					long numero = produtoAppService.inclui(umProduto);
 					
@@ -105,7 +105,7 @@ public class Principal
 								System.out.println(categoriaResult.getMessage());
 							}
 							Categoria categoria = categoriaResult.getPayload();
-							umProduto.setCategoria(categoria);
+							umProduto.setCategoria(categoria.getId());
 
 							try
 							{	produtoAppService.altera(umProduto);
@@ -170,7 +170,8 @@ public class Principal
 					List<Produto> produtos = produtoAppService.recuperaProdutos();
 
 					for (Produto produto : produtos)
-					{	
+					{
+
 						System.out.println(produto.toString());
 					}
 					

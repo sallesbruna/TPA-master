@@ -15,7 +15,7 @@ public class ProdutoAppService
 		this.categoriaAppService = categoriaAppService;
 	}
 
-	public long inclui(Produto umProduto) 
+	public long inclui(Produto umProduto)
 	{
 		try
 		{	
@@ -23,7 +23,8 @@ public class ProdutoAppService
 		
 /*==>*/		JPAUtil.beginTransaction();
 			
-			long numero = produtoDAO.inclui(umProduto);
+			Long numero = produtoDAO.inclui(umProduto);
+
 
 /*==>*/		JPAUtil.commitTransaction();
 			
@@ -86,13 +87,11 @@ public class ProdutoAppService
 		try
 		{
 			JPAUtil.beginTransaction();
-			semaforo++;
 			categoriaAppService.inclui(categoria);
 
 			produtoDAO.altera(umProduto);
 
 			JPAUtil.commitTransaction();
-			semaforo--;
 		}
 		catch(ObjetoNaoEncontradoException e)
 		{
@@ -114,8 +113,7 @@ public class ProdutoAppService
 		}
 		finally
 		{
-			if(semaforo == 0)
-				JPAUtil.closeEntityManager();
+			JPAUtil.closeEntityManager();
 		}
 	}
 		
@@ -188,7 +186,7 @@ public class ProdutoAppService
 
 		try {
 			c = categoriaAppService.recuperaCategoriaPorNome(nome);
-		} catch (CategoriaNaoEncontradaException e) {
+		} catch (Exception e) {
 			return Collections.emptyList();
 		}
 

@@ -13,7 +13,7 @@ public class Produto
 	private Date dataCadastro;
 	private String nome;
 	private Date dataVenda;
-	private Categoria categoria;
+	private Long categoria;
 
 	// ********* Construtores *********
 
@@ -21,7 +21,7 @@ public class Produto
 	{
 	}
 
-	public static Produto criarProduto(String nome, Date dataCadastro, Categoria categoria){
+	public static Produto criarProduto(String nome, Date dataCadastro, Long categoria){
 		Produto p = new Produto();
 		p.setNome(nome);
 		p.setDataCadastro(dataCadastro);
@@ -42,9 +42,10 @@ public class Produto
 	{	return nome;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER, optional = false, cascade = CascadeType.ALL)
-	@JoinColumn(name="CATEGORIA_ID", nullable = false)
-	public Categoria getCategoria(){
+	//@ManyToOne(fetch = FetchType.EAGER, optional = false, cascade = CascadeType.ALL)
+	//@JoinColumn(name="CATEGORIA_ID", nullable = false)
+	@Column(name="CATEGORIA_ID")
+	public Long getCategoria(){
 		return categoria;
 	}
 
@@ -89,19 +90,26 @@ public class Produto
 	{	this.dataVenda = dataVenda;
 	}
 
-	public void setCategoria(Categoria categoria)
+	public void setCategoria(Long categoria)
 	{	this.categoria = categoria;
 	}
 
 	@Override
 	public String toString(){
-		return "{ " +
-				"\n Número = " + getId()  +
-				"\n Nome = " + getNome() +
-				"\n Categoria = " + getCategoria().toString() +
-				"\n Data Cadastro = " + getDataCadastro() +
-				"\n Data Venda = " + getDataVenda() +
-				"\n }";
+		CategoriaAppService categoriaAppService = new CategoriaAppService();
+		try {
+			return "{ " +
+					"\n Número = " + getId() +
+					"\n Nome = " + getNome() +
+					"\n Categoria = " + categoriaAppService.recuperaUmaCategoria(getCategoria()).getNome() +
+					"\n Data Cadastro = " + getDataCadastro() +
+					"\n Data Venda = " + getDataVenda() +
+					"\n }";
+		}
+		catch (CategoriaNaoEncontradaException e){
+			e.printStackTrace();
+		}
+		return null;
 	}
 }
 

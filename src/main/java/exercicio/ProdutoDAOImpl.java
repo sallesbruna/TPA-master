@@ -12,8 +12,8 @@ public class ProdutoDAOImpl implements ProdutoDAO
 	{	try
 		{	EntityManager em = JPAUtil.getEntityManager();
 
+			System.out.println(umProduto.getCategoria());
 			em.persist(umProduto);
-			
 			return umProduto.getId();
 		} 
 		catch(RuntimeException e)

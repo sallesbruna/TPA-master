@@ -1,5 +1,6 @@
 package exercicio;
 
+import org.hibernate.annotations.SourceType;
 import sun.util.resources.cldr.tg.CalendarData_tg_Cyrl_TJ;
 
 import java.util.Collections;
@@ -18,14 +19,11 @@ public class CategoriaAppService
 
 
 		    JPAUtil.beginTransaction();
-            ProdutoAppService.semaforo++;
 
             numero = CategoriaDAO.inclui(umaCategoria);
-            if(ProdutoAppService.semaforo == 0)
-            {
-		        JPAUtil.commitTransaction();
-                ProdutoAppService.semaforo--;
-            }
+
+		    JPAUtil.commitTransaction();
+
             return numero;
 
         }
@@ -43,7 +41,6 @@ public class CategoriaAppService
         }
         finally
 	/*==>*/ {
-            if(ProdutoAppService.semaforo == 0)
                 JPAUtil.closeEntityManager();
         }
 
@@ -54,12 +51,10 @@ public class CategoriaAppService
         try
         {
             JPAUtil.beginTransaction();
-            JPAUtil.semaforo++;
             CategoriaDAO.altera(umaCategoria);
 
             JPAUtil.commitTransaction();
 
-            JPAUtil.semaforo--;
         }
         catch(ObjetoNaoEncontradoException e)
         {
@@ -142,31 +137,30 @@ public class CategoriaAppService
 
         try {
             categoria = recuperaCategoriaPorNome(nome);
-        } catch (CategoriaNaoEncontradaException e) {
 
-            try{
-
-                JPAUtil.beginTransaction();
-                Long id = inclui(Categoria.criarCategoria(nome));
-
-                categoria = CategoriaDAO.recuperaUmaCategoria(id);
-
-                JPAUtil.commitTransaction();
+                if(categoria == null) {
+                    JPAUtil.beginTransaction();
+                    Long id = inclui(Categoria.criarCategoria(nome));
+                    System.out.println("criou nova categoria");
+                    categoria = CategoriaDAO.recuperaUmaCategoria(id);
+                    System.out.println("recuperou categoria");
+                    JPAUtil.commitTransaction();
+                }
             } catch (ObjetoNaoEncontradoException e1) {
-
-            } finally {
                 JPAUtil.rollbackTransaction();
+            } finally {
+                JPAUtil.closeEntityManager();
             }
 
             mensagem = "Nova categoria adicionada!";
-        }
+
 
         return mensagem == null
             ? new Result<>(categoria)
             : new Result<>(categoria, mensagem);
     }
 
-    public Categoria recuperaCategoriaPorNome(String nome) throws CategoriaNaoEncontradaException
+    public Categoria recuperaCategoriaPorNome(String nome)
     {
         try
         {
@@ -175,8 +169,10 @@ public class CategoriaAppService
         }
         catch(ObjetoNaoEncontradoException e)
         {
-            throw new CategoriaNaoEncontradaException("Categoria não encontrada");
+            System.out.println("categoria nao encontrada.");
+            return null;
         }
+
     }
 
     public List<Categoria> recuperaCategorias(){
