@@ -19,30 +19,4 @@ public abstract class CategoriaDAOImpl extends JPADaoGenerico<Categoria, Long> i
 
     }
 
-    @Override
-    public Categoria recuperaUmaCategoriaPorNome(String nome) throws ObjetoNaoEncontradoException {
-        try
-        {
-            Query query = em.createQuery("select p from dao.Categoria p where p.nome = :oNome");
-            query.setParameter("oNome", nome);
-
-            List list = query.getResultList();
-            if(list.isEmpty()){
-                throw new ObjetoNaoEncontradoException();
-            }
-
-            Categoria umaCategoria = (Categoria)list.get(0);
-
-            if (umaCategoria == null)
-            {	throw new ObjetoNaoEncontradoException();
-            }
-
-            return umaCategoria;
-        }
-        catch(RuntimeException e)
-        {
-            throw new InfraestruturaException(e);
-        }
-    }
-
 }

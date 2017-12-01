@@ -1,6 +1,5 @@
 package dao;
 
-import anotacao.FazNada;
 import anotacao.RecuperaLista;
 import anotacao.RecuperaObjeto;
 import modelo.Categoria;
@@ -17,7 +16,7 @@ public interface CategoriaDAO extends DaoGenerico<Categoria, Long>
     @RecuperaLista
     List<Categoria> recuperaCatetorias();
 
-    @FazNada
+    @RecuperaObjeto
     Categoria recuperaUmaCategoriaPorNome(String nome) throws ObjetoNaoEncontradoException;
 
 }

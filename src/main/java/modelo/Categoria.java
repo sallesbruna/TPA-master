@@ -4,7 +4,21 @@ import java.util.List;
 
 import javax.persistence.*;
 
-
+@NamedQueries(
+    {
+        @NamedQuery
+        (	name = "Categoria.recuperaUmaCategoria",
+                query = "select c from Categoria c where c.id = ?1"
+        ),
+        @NamedQuery
+        (	name = "Categoria.recuperaCatetorias",
+                query = "select c from Categoria c order by c.id"
+        ),
+        @NamedQuery
+        (	name = "Categoria.recuperaUmaCategoriaPorNome",
+                query = "select c from Categoria c where c.nome = ?1"
+        )
+    })
 @Entity
 @Table(name="CATEGORIA")
 public class Categoria {

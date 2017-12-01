@@ -12,8 +12,12 @@ import javax.persistence.*;
 @NamedQueries(
 	{
 		@NamedQuery
+		(	name = "Produto.recuperaUmProduto",
+			query = "select p from Produto p where p.id = ?1"
+		),
+		@NamedQuery
 		(	name = "Produto.recuperaProdutos",
-				query = "select p from Produto p "
+			query = "select p from Produto p "
 		)
 	})
 @Entity

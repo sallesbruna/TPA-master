@@ -57,10 +57,6 @@ public class InterceptadorDeDAO implements MethodInterceptor
         {	// O método busca() retorna um Objeto (Entidade)
         	return daoGenerico.busca(metodo, args);
         }
-        else if(metodo.isAnnotationPresent(FazNada.class)){
-            // n faz nada msm
-            return metodoDoProxy.invokeSuper(objeto, args);
-        }
         else
         {  	throw new InfraestruturaException("Um método não final deixou de ser anotado");
         	// return metodoDoProxy.invokeSuper(objeto, args);

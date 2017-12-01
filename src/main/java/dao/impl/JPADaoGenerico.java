@@ -53,7 +53,7 @@ public class JPADaoGenerico<T, PK>
         }
     }
 
-    public final void exclui(Long o)
+    public final void exclui(T o)
     { 
         try 
         {	em.remove(o);

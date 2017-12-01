@@ -1,5 +1,6 @@
 package service;
 
+import dao.CategoriaDAO;
 import excecao.ObjetoNaoEncontradoException;
 import excecao.ProdutoNaoEncontradoException;
 import dao.ProdutoDAO;
@@ -8,17 +9,23 @@ import modelo.Produto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ProdutoAppService
 {	
 	private ProdutoDAO produtoDAO;
+	private CategoriaDAO categoriaDAO;
 
 	@Autowired
 	public void setProdutoDAO(ProdutoDAO produtoDAO){
 		this.produtoDAO = produtoDAO;
+	}
+
+	@Autowired
+	public void setCategoriaDAO(CategoriaDAO categoriaDAO){
+		this.categoriaDAO = categoriaDAO;
 	}
 
 
@@ -38,8 +45,10 @@ public class ProdutoAppService
 	}
 
 	@Transactional
-	public void exclui(Long numero){
-			produtoDAO.exclui(numero);
+	public void exclui(Long produtoId) throws ProdutoNaoEncontradoException {
+		Produto p = recuperaUmProduto(produtoId);
+
+		produtoDAO.exclui(p);
 	}
 
 	public Produto recuperaUmProduto(Long numero) throws ProdutoNaoEncontradoException {
@@ -63,10 +72,16 @@ public class ProdutoAppService
 	}
 
 
-	public List<Produto> recuperaProdutosPorCategoria(String categoria) {
+	public List<Produto> recuperaProdutosPorCategoria(String nomeCategoria) {
+		Categoria categoria;
+		try {
+			categoria = categoriaDAO.recuperaUmaCategoriaPorNome(nomeCategoria);
+		} catch (ObjetoNaoEncontradoException e) {
+			return new ArrayList<>();
+		}
 		List<Produto> produtos = produtoDAO.recuperaProdutos()
 				.stream()
-				.filter(x -> x.getCategoria().equals(categoria))
+				.filter(x -> x.getCategoria().equals(categoria.getId()))
 				.collect(Collectors.toList());
 		return produtos;
 	}

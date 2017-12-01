@@ -47,18 +47,18 @@ public class CategoriaAppService
     }
 
     @Transactional
-    public void exclui(Categoria umaCategoria) throws CategoriaNaoEncontradaException
+    public void exclui(Long categoriaId) throws CategoriaNaoEncontradaException
     {
         try
         {
-            Categoria categoria = categoriaDAO.recuperaUmaCategoria(umaCategoria.getId());
+            Categoria categoria = categoriaDAO.recuperaUmaCategoria(categoriaId);
 
-            if(umaCategoria.getProdutos().size() > 0)
+            if(categoria.getProdutos().size() > 0)
             {
                 throw new InfraestruturaException("Existe produtos com esta categoria, não foi possível remover.");
             }
 
-            categoriaDAO.exclui(categoria.getId());
+            categoriaDAO.exclui(categoria);
         }
         catch(ObjetoNaoEncontradoException e)
         {

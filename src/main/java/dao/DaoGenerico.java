@@ -12,7 +12,7 @@ public interface DaoGenerico<T, PK>
 
 	void altera(T obj);
 
-	void exclui(Long obj);
+	void exclui(T obj);
 
     T getPorId(PK id) throws ObjetoNaoEncontradoException;
 

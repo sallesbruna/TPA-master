@@ -1,6 +1,5 @@
 import java.util.Date;
 import java.util.List;
-import corejava.Console;
 import dao.Result;
 import excecao.ProdutoNaoEncontradoException;
 import modelo.Categoria;
@@ -146,12 +145,20 @@ public class Principal
 						"    Nome = " + umProduto.getNome());
 														
 					String resp = Console.readLine('\n' + 
-						"Confirma a remocao do produto?");
+						"Confirma a remocao do produto? (s|n)");
 
-					if(resp.equals("s"))
-					{		produtoAppService.exclui (umProduto.getId());
-							System.out.println('\n' + 
-								"Produto removido com sucesso!");
+					if(resp.toLowerCase().equals("s"))
+					{
+						try {
+							produtoAppService.exclui (umProduto.getId());
+
+							System.out.println('\n' +
+									"Produto removido com sucesso!");
+						} catch (ProdutoNaoEncontradoException e) {
+
+							System.out.println('\n' +
+									"Produto não encontrado.");
+						}
 
 					}
 					else
