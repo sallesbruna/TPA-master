@@ -5,13 +5,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.EntityManager;
-import javax.persistence.LockModeType;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import javax.persistence.*;
 
 import dao.DaoGenerico;
+import excecao.CategoriaJaCadastradaException;
 import excecao.InfraestruturaException;
 import excecao.ObjetoNaoEncontradoException;
 

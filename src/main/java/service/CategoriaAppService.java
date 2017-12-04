@@ -53,10 +53,10 @@ public class CategoriaAppService
         {
             Categoria categoria = categoriaDAO.recuperaUmaCategoria(categoriaId);
 
-            if(categoria.getProdutos().size() > 0)
-            {
-                throw new InfraestruturaException("Existe produtos com esta categoria, não foi possível remover.");
-            }
+//            if(categoria.getProdutos().size() > 0)
+//            {
+//                throw new InfraestruturaException("Existe produtos com esta categoria, não foi possível remover.");
+//            }
 
             categoriaDAO.exclui(categoria);
         }
@@ -80,6 +80,7 @@ public class CategoriaAppService
 
     public List<Categoria> recuperaCategorias()
     {
+
         return categoriaDAO.recuperaCatetorias();
     }
 
@@ -101,4 +102,6 @@ public class CategoriaAppService
         }
 
     }
+
+
 }

@@ -31,7 +31,7 @@ public class AspectoAround
 		listaDeNomesDeConstraints = new ArrayList<String>(map.keySet());
 	}
 	
-	@Pointcut("call(* servico.*.*(..))")
+	@Pointcut("call(* service.*.*(..))")
 	public void traduzExcecaoAround() {}
 
 	@Around("traduzExcecaoAround()")

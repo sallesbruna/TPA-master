@@ -16,7 +16,7 @@ public class AspectoParaLogDeErros
 	private static Logger logger = null;
 	
 //	@Pointcut("execution(* visao..*.*(..)) || execution(visao..*.new(..))")
-	@Pointcut("call(* servico..*.*(..))")
+	@Pointcut("call(* service..*.*(..))")
 	public void efetuaLogDeErro() {}
 
 	@Around("efetuaLogDeErro()")
