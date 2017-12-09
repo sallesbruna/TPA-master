@@ -121,7 +121,7 @@ public class Principal {
 							break;
 
 						default:
-							System.out.println('\n' + "Opcaoo invalida!");
+							System.out.println('\n' + "Opcao invalida!");
 					}
 
 					break;
@@ -179,15 +179,10 @@ public class Principal {
 
 
 				case 5: {
-					String novoNome = Console.readLine("Digite o nome para a Categoria: ");
-					List<Produto> produtos = produtoAppService.recuperaProdutosPorCategoria(novoNome);
-
-					for (Produto produto : produtos) {
-						System.out.println(produto.toString());
-					}
+					String categ = Console.readLine('\n' + "Digite a categoria que deseja buscar produtos");
+					CategoriaAppService.recuperaCategoriaPorNome(categ);
 
 					break;
-
 				}
 
 
@@ -233,9 +228,12 @@ public class Principal {
 					break;
 				}
 
-				case 8:
-				{
-					categoriaAppService.recuperaCategorias();
+				case 8: {
+					List<Categoria> categoriaList = categoriaAppService.recuperaCategorias();
+					for (Categoria categoria : categoriaList){
+						System.out.println(categoria.toString());
+					}
+
 					break;
 				}
 
@@ -245,5 +243,7 @@ public class Principal {
 
 
 		}
+
+
 	}
 }
