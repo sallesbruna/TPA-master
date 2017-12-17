@@ -2,6 +2,7 @@ import java.util.Date;
 import java.util.List;
 import dao.Result;
 import excecao.CategoriaNaoEncontradaException;
+import excecao.ObjetoNaoEncontradoException;
 import excecao.ProdutoNaoEncontradoException;
 import modelo.Categoria;
 import modelo.Produto;
@@ -180,7 +181,11 @@ public class Principal {
 
 				case 5: {
 					String categ = Console.readLine('\n' + "Digite a categoria que deseja buscar produtos");
-					CategoriaAppService.recuperaCategoriaPorNome(categ);
+					try {
+						categoriaAppService.recuperaCategoriaPorNome(categ);
+					} catch (CategoriaNaoEncontradaException e) {
+						e.printStackTrace();
+					}
 
 					break;
 				}
@@ -195,11 +200,11 @@ public class Principal {
 				}
 
 				case 7: {
-					int resposta = Console.readInt('\n' +
+					String resposta = Console.readLine('\n' +
 							"Digite o nome da categoria que voce deseja remover: ");
 
 					try {
-						categoriaAppService.exclui((long) resposta);
+						categoriaAppService.excluiPorNome(resposta);
 
 					} catch (CategoriaNaoEncontradaException e) {
 						System.out.println('\n' + e.getMessage());

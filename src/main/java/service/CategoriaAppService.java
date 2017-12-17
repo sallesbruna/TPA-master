@@ -49,21 +49,14 @@ public class CategoriaAppService
     @Transactional
     public void exclui(Long categoriaId) throws CategoriaNaoEncontradaException
     {
-        try
-        {
-            Categoria categoria = categoriaDAO.recuperaUmaCategoria(categoriaId);
+        Categoria categoria = categoriaDAO.recuperaUmaCategoria(categoriaId);
 
-//            if(categoria.getProdutos().size() > 0)
-//            {
-//                throw new InfraestruturaException("Existe produtos com esta categoria, não foi possível remover.");
-//            }
-
-            categoriaDAO.exclui(categoria);
-        }
-        catch(ObjetoNaoEncontradoException e)
+        if(categoria.getProdutos().size() > 0)
         {
-            throw new CategoriaNaoEncontradaException("Categoria não encontrada");
+            throw new InfraestruturaException("Existe produtos com esta categoria, não foi possível remover.");
         }
+
+        categoriaDAO.exclui(categoria);
     }
 
     public Categoria recuperaUmaCategoria(long numero) throws CategoriaNaoEncontradaException
@@ -85,7 +78,7 @@ public class CategoriaAppService
     }
 
 
-    public Categoria recuperaCategoriaPorNome(String nome) throws ObjetoNaoEncontradoException {
+    public Categoria recuperaCategoriaPorNome(String nome) throws CategoriaNaoEncontradaException {
         return categoriaDAO.recuperaUmaCategoriaPorNome(nome);
     }
 
@@ -94,7 +87,7 @@ public class CategoriaAppService
         try {
             Categoria c = recuperaCategoriaPorNome(nomeCategoria);
             return new Result<Categoria>(c);
-        } catch(ObjetoNaoEncontradoException ex) {
+        } catch(CategoriaNaoEncontradaException ex) {
             Categoria newCategoria = new Categoria();
             newCategoria.setNome(nomeCategoria);
             Categoria categoriaInserida = inclui(newCategoria);
@@ -104,4 +97,9 @@ public class CategoriaAppService
     }
 
 
+    public void excluiPorNome(String resposta) throws CategoriaNaoEncontradaException {
+        Categoria c =  recuperaCategoriaPorNome(resposta);
+
+        exclui(c.getId());
+    }
 }

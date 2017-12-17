@@ -1,6 +1,7 @@
 package service;
 
 import dao.CategoriaDAO;
+import excecao.CategoriaNaoEncontradaException;
 import excecao.ObjetoNaoEncontradoException;
 import excecao.ProdutoNaoEncontradoException;
 import dao.ProdutoDAO;
@@ -76,7 +77,7 @@ public class ProdutoAppService
 		Categoria categoria;
 		try {
 			categoria = categoriaDAO.recuperaUmaCategoriaPorNome(nomeCategoria);
-		} catch (ObjetoNaoEncontradoException e) {
+		} catch (CategoriaNaoEncontradaException e) {
 			return new ArrayList<>();
 		}
 		List<Produto> produtos = produtoDAO.recuperaProdutos()
