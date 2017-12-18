@@ -1,7 +1,10 @@
 package service;
 
 
+import anotacao.RoleAdmin;
+import anotacao.RoleUser1;
 import dao.Result;
+import excecao.CategoriaJaCadastradaException;
 import excecao.CategoriaNaoEncontradaException;
 import excecao.InfraestruturaException;
 import excecao.ObjetoNaoEncontradoException;
@@ -26,12 +29,20 @@ public class CategoriaAppService
         this.categoriaDAO = categoriaDAO;
     }
 
+    @RoleAdmin
     @Transactional
     public Categoria inclui(Categoria umaCategoria)
     {
-        return categoriaDAO.inclui(umaCategoria);
+        try {
+            Categoria c = recuperaCategoriaPorNome(umaCategoria.getNome());
+        } catch (CategoriaNaoEncontradaException e) {
+            return categoriaDAO.inclui(umaCategoria);
+        }
+
+        throw new CategoriaJaCadastradaException();
     }
 
+    @RoleAdmin
     @Transactional
     public void altera(Categoria umaCategoria) throws CategoriaNaoEncontradaException
     {
@@ -46,6 +57,7 @@ public class CategoriaAppService
         }
     }
 
+    @RoleAdmin
     @Transactional
     public void exclui(Long categoriaId) throws CategoriaNaoEncontradaException
     {
@@ -64,6 +76,13 @@ public class CategoriaAppService
         categoriaDAO.exclui(categoria);
     }
 
+    @RoleAdmin
+    public void excluiPorNome(String resposta) throws CategoriaNaoEncontradaException {
+        Categoria c =  recuperaCategoriaPorNome(resposta);
+        exclui(c.getId());
+    }
+
+    @RoleUser1
     public Categoria recuperaUmaCategoria(long numero) throws CategoriaNaoEncontradaException
     {
         try
@@ -76,6 +95,7 @@ public class CategoriaAppService
         }
     }
 
+    @RoleUser1
     public List<Categoria> recuperaCategorias()
     {
 
@@ -83,6 +103,7 @@ public class CategoriaAppService
     }
 
 
+    @RoleUser1
     public Categoria recuperaCategoriaPorNome(String nome) throws CategoriaNaoEncontradaException {
         try {
             return categoriaDAO.recuperaUmaCategoriaPorNome(nome);
@@ -105,9 +126,4 @@ public class CategoriaAppService
 
     }
 
-
-    public void excluiPorNome(String resposta) throws CategoriaNaoEncontradaException {
-        Categoria c =  recuperaCategoriaPorNome(resposta);
-        exclui(c.getId());
-    }
 }

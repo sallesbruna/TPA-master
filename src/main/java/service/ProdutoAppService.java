@@ -1,5 +1,7 @@
 package service;
 
+import anotacao.RoleAdmin;
+import anotacao.RoleUser1;
 import dao.CategoriaDAO;
 import excecao.CategoriaNaoEncontradaException;
 import excecao.ObjetoNaoEncontradoException;
@@ -34,17 +36,20 @@ public class ProdutoAppService
 
 	}
 
+	@RoleAdmin
 	@Transactional
 	public Produto inclui(Produto umProduto) {
 		Produto p = produtoDAO.inclui(umProduto);
 		return p;
 	}
 
+	@RoleAdmin
 	@Transactional
 	public void altera(Produto umProduto){
 			produtoDAO.altera(umProduto);
 	}
 
+	@RoleAdmin
 	@Transactional
 	public void exclui(Long produtoId) throws ProdutoNaoEncontradoException {
 		Produto p = recuperaUmProduto(produtoId);
@@ -52,6 +57,7 @@ public class ProdutoAppService
 		produtoDAO.exclui(p);
 	}
 
+	@RoleUser1
 	public Produto recuperaUmProduto(Long numero) throws ProdutoNaoEncontradoException {
 		try
 		{
@@ -65,6 +71,7 @@ public class ProdutoAppService
 		}
 	}
 
+	@RoleUser1
 	public List<Produto> recuperaProdutos()
 	{
 		List<Produto> produtos = produtoDAO.recuperaProdutos();
@@ -72,7 +79,7 @@ public class ProdutoAppService
 		return produtos;
 	}
 
-
+	@RoleUser1
 	public List<Produto> recuperaProdutosPorCategoria(String nomeCategoria) {
 		Categoria categoria;
 		try {

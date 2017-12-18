@@ -1,12 +1,16 @@
 import java.util.Date;
 import java.util.List;
+
+import anotacao.RoleAdmin;
+import anotacao.RoleUser1;
+import anotacao.RoleUser2;
+import anotacao.RoleUser3;
+import aspecto.PermissoesSingleton;
 import dao.Result;
 import excecao.CategoriaNaoEncontradaException;
-import excecao.ObjetoNaoEncontradoException;
 import excecao.ProdutoNaoEncontradoException;
 import modelo.Categoria;
 import modelo.Produto;
-import org.hibernate.annotations.SourceType;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import service.CategoriaAppService;
@@ -21,6 +25,10 @@ public class Principal {
 		Produto umProduto;
 		Categoria umaCategoria = null;
 
+		PermissoesSingleton.getPermissoesSingleton().adicionaPermissao(RoleAdmin.PERMISSAO);
+		PermissoesSingleton.getPermissoesSingleton().adicionaPermissao(RoleUser1.PERMISSAO);
+		PermissoesSingleton.getPermissoesSingleton().adicionaPermissao(RoleUser2.PERMISSAO);
+		PermissoesSingleton.getPermissoesSingleton().adicionaPermissao(RoleUser3.PERMISSAO);
 
 		@SuppressWarnings("resource")
 		ApplicationContext fabrica = new ClassPathXmlApplicationContext("beans-jpa.xml");
@@ -181,12 +189,13 @@ public class Principal {
 
 				case 5: {
 					String categ = Console.readLine('\n' + "Digite a categoria que deseja buscar produtos");
-					try {
-						categoriaAppService.recuperaCategoriaPorNome(categ);
-					} catch (CategoriaNaoEncontradaException e) {
-						e.printStackTrace();
-					}
 
+					List<Produto> produtos = produtoAppService.recuperaProdutosPorCategoria(categ);
+
+					for (Produto produto : produtos) {
+
+						System.out.println(produto.toString());
+					}
 					break;
 				}
 
