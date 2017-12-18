@@ -30,6 +30,7 @@ public class Produto
 	private String nome;
 	private Date dataVenda;
 	private Long categoria;
+	private String categoriaNome;
 
 	// ********* Construtores *********
 
@@ -119,6 +120,15 @@ public class Produto
 				"\n Data Venda = " + getDataVenda() +
 				"\n }";
 
+	}
+
+	@Transient
+    public String getCategoriaNome() {
+        return "asdf";
+    }
+
+	public void setCategoriaNome(String categoriaNome) {
+		this.categoriaNome = categoriaNome;
 	}
 }
 

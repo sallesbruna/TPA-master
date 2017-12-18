@@ -54,23 +54,30 @@ public class Principal {
 
 			switch (opcao) {
 				case 1: {
-					nome = Console.readLine('\n' +
-							"Informe o nome do produto: ");
-					dataCadastro = Util.dateToStr(new java.sql.Date(new Date().getTime()));
-					nomeCategoria = Console.readLine(
-							"Informe a categoria do produto: ");
 
-					Result<Categoria> categoriaResult = categoriaAppService.recuperaCategoriaPorNomeOuInsere(nomeCategoria);
-					if (categoriaResult.hasMessage()) {
-						System.out.println(categoriaResult.getMessage());
-					}
-					umaCategoria = categoriaResult.getPayload();
-					umProduto = Produto.criarProduto(nome, Util.strToDate(dataCadastro), umaCategoria.getId());
+					IncluiProduto.main(new IncluiProduto.IncluirProdutoAcao() {
+						@Override
+						public boolean salvar(String produtoNome, String categoria) {
+							try{
+								String dataCadastro = Util.dateToStr(new java.sql.Date(new Date().getTime()));
 
-					Produto numero = produtoAppService.inclui(umProduto);
+								Result<Categoria> categoriaResult = categoriaAppService.recuperaCategoriaPorNomeOuInsere(categoria);
+								if (categoriaResult.hasMessage()) {
+									System.out.println(categoriaResult.getMessage());
+								}
+								Categoria umaCategoria = categoriaResult.getPayload();
+								Produto umProduto = Produto.criarProduto(produtoNome, Util.strToDate(dataCadastro), umaCategoria.getId());
 
-					System.out.println('\n' + "Produto numero " +
-							numero + " incluido com sucesso!");
+								Produto numero = produtoAppService.inclui(umProduto);
+
+								return true;
+
+							} catch(Exception ex){
+								return false;
+							}
+
+						}
+					});
 
 					break;
 				}
@@ -177,11 +184,36 @@ public class Principal {
 
 				case 4: {
 					List<Produto> produtos = produtoAppService.recuperaProdutos();
+					ListarProdutos.main(produtos,
+							new ListarProdutos.ListarProdutosAcao() {
+								@Override
+								public List<Produto> Listar() {
 
-					for (Produto produto : produtos) {
-
-						System.out.println(produto.toString());
-					}
+									return produtoAppService.recuperaProdutos();
+								}
+							},
+							new ListarProdutos.RemoverProdutoAcao() {
+								@Override
+								public boolean Remover(Long id) {
+									try {
+										produtoAppService.exclui(id);
+									} catch (ProdutoNaoEncontradoException e) {
+										return false;
+									}
+									return true;
+								}
+							},
+							new ListarProdutos.EditarProdutoAcao() {
+								@Override
+								public Produto Editar(Produto produto) {
+									try {
+										produtoAppService.altera(produto);
+									} catch(Exception ex){
+										return null;
+									}
+									return produto;
+								}
+							});
 
 					break;
 				}
