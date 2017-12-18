@@ -20,7 +20,7 @@ public class IncluiProduto {
 
     private Long getCategoriaSelecionadaId() {
         if(categoriaProdutoComboBox.getSelectedIndex() > -1){
-            ComboItem item = (ComboItem) categoriaProdutoComboBox.getSelectedItem();
+            ComboItem<Long> item = (ComboItem<Long>) categoriaProdutoComboBox.getSelectedItem();
             return item.getValue();
         }
         return 0L;
@@ -52,6 +52,7 @@ public class IncluiProduto {
                 String result = acao.remover(p.getId());
                 if(result == null){
                     JOptionPane.showMessageDialog(null, "Produto removido com sucesso.");
+                    frame.setVisible(false);
                 } else {
                     JOptionPane.showMessageDialog(null, "Erro ao remover produto. " + result);
                 }
@@ -99,7 +100,7 @@ public class IncluiProduto {
         List<ComboItem> comboItems = categorias.stream().map(x -> new ComboItem(x.getNome(), x.getId())).collect(Collectors.toList());
         comboItems.forEach(x -> categoriaProdutoComboBox.addItem(x));
 
-        removerProdutoButton.setEnabled(produtoId == 0);
+        removerProdutoButton.setEnabled(produtoId > 0);
 
         if(categoria > 0){
             categoriaProdutoComboBox.setSelectedItem(comboItems.stream().filter(x -> x.getValue().equals(categoria)));
@@ -112,31 +113,33 @@ public class IncluiProduto {
         String remover(Long id);
     }
 
-    private class ComboItem
+
+}
+
+class ComboItem<V>
+{
+    private String key;
+    private V value;
+
+    public ComboItem(String key, V value)
     {
-        private String key;
-        private Long value;
+        this.key = key;
+        this.value = value;
+    }
 
-        public ComboItem(String key, Long value)
-        {
-            this.key = key;
-            this.value = value;
-        }
+    @Override
+    public String toString()
+    {
+        return key;
+    }
 
-        @Override
-        public String toString()
-        {
-            return key;
-        }
+    public String getKey()
+    {
+        return key;
+    }
 
-        public String getKey()
-        {
-            return key;
-        }
-
-        public Long getValue()
-        {
-            return value;
-        }
+    public V getValue()
+    {
+        return value;
     }
 }

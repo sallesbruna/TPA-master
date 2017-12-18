@@ -1,51 +1,66 @@
+import aspecto.PermissoesSingleton;
 import modelo.Categoria;
 import modelo.Produto;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ListarProdutos {
     private JList produtosLista;
     private JPanel panel;
-    private JButton listarProdutosBotao;
-    private JButton removerSelecionadoButton;
+    private JButton atualizarButton;
     private JButton verProdutoButton;
-    private JButton listarCategoriasButton;
     private JList categoriasLista;
     private JButton verCategoriaButton;
     private JButton novaCategoriaButton;
     private JButton novoProdutoButton;
+    private JCheckBox atualizarAutomaticamenteCheckBox;
+    private JComboBox comboBoxPermissoes;
     private ListarProdutosAcao listarProdutosAcao;
+    private List<Produto> __produtinhos;
+    private List<Categoria> __categorias;
 
-    private void atualizarListaDeProdutos() {
-        produtosLista.removeAll();
-
-        DefaultListModel<String> model = new DefaultListModel<String>();
-        produtosLista.setModel(model);
-
-        List<Produto> produtinhos = listarProdutosAcao.getListaProdutos();
-        for (Produto p: produtinhos) {
-
-            ((DefaultListModel<String>)produtosLista.getModel()).addElement(p.toString());
-            produtosLista.add(new JLabel());
-        }
+    private List<Produto> getProdutinhos() {
+        return __produtinhos;
     }
 
+    private List<Categoria> getCategorias() {
+        return __categorias;
+    }
+
+    private void atualizarListaDeProdutos() {
+        __produtinhos = listarProdutosAcao.getListaProdutos();
+
+        int index = produtosLista.getSelectedIndex();
+        ((DefaultListModel<String>)produtosLista.getModel()).clear();
+        for (Produto p: getProdutinhos()) {
+
+            ((DefaultListModel<String>)produtosLista.getModel()).addElement(p.toString());
+        }
+        produtosLista.setSelectedIndex(index);
+    }
 
     private void atualizarListaDeCategorias() {
-        categoriasLista.removeAll();
+        __categorias = listarProdutosAcao.getListaCategorias();
 
-        DefaultListModel<String> model = new DefaultListModel<String>();
-        categoriasLista.setModel(model);
-
-        List<Categoria> categorias = listarProdutosAcao.getListaCategorias();
-        for (Categoria p: categorias) {
+        int index = categoriasLista.getSelectedIndex();
+        ((DefaultListModel<String>)categoriasLista.getModel()).clear();
+        for (Categoria p: getCategorias()) {
 
             ((DefaultListModel<String>)categoriasLista.getModel()).addElement(p.toString());
-            categoriasLista.add(new JLabel());
         }
+        categoriasLista.setSelectedIndex(index);
     }
 
     private void novoProduto(ListarProdutosAcao acao){
@@ -77,23 +92,28 @@ public class ListarProdutos {
         }
     }
 
-    public ListarProdutos(List<Produto> produtinhos, List<Categoria> categorias, ListarProdutosAcao listarProdutosAcao) {
-        this.listarProdutosAcao = listarProdutosAcao;
+    private void atualizarRecorrente() {
+        try {
+            Thread.sleep(1000);
+            atualizarListaDeProdutos();
+            atualizarListaDeCategorias();
+            atualizarRecorrente();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
-        listarProdutosBotao.addMouseListener(new MouseAdapter() {
+    public ListarProdutos(List<Produto> p, List<Categoria> c, ListarProdutosAcao listarProdutosAcao) {
+        this.listarProdutosAcao = listarProdutosAcao;
+        this.__produtinhos = p;
+        this.__categorias = c;
+
+        atualizarButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
 
                 atualizarListaDeProdutos();
-            }
-        });
-
-        listarCategoriasButton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-
                 atualizarListaDeCategorias();
             }
         });
@@ -104,10 +124,23 @@ public class ListarProdutos {
                 super.mouseClicked(e);
 
                 int index = produtosLista.getSelectedIndex();
+
+                try{
+                    String selectedValue = (String) produtosLista.getSelectedValue();
+                    if(selectedValue != null){
+                        String theId = selectedValue.split(",")[0].split(" ")[3];
+                        Long id = Long.parseLong(theId);
+                        Optional<Produto> first = getProdutinhos().stream().filter(x -> x.getId().equals(id)).findFirst();
+                        if(first.isPresent()){
+                            index = getProdutinhos().indexOf(first.get());
+                        }
+                    }
+                } catch(Exception ex){ }
+
                 if(index == -1){
                     JOptionPane.showMessageDialog(null, "Nenhum produto selecionado.");
                 }else{
-                    verProduto(produtinhos, listarProdutosAcao, index);
+                    verProduto(getProdutinhos(), listarProdutosAcao, index);
                     atualizarListaDeProdutos();
                 }
             }
@@ -133,7 +166,7 @@ public class ListarProdutos {
                 if(index == -1){
                     JOptionPane.showMessageDialog(null, "Nenhuma categoria selecionada.");
                 }else{
-                    verCategoria(categorias, listarProdutosAcao, index);
+                    verCategoria(getCategorias(), listarProdutosAcao, index);
                     atualizarListaDeCategorias();
                 }
             }
@@ -146,6 +179,34 @@ public class ListarProdutos {
                 atualizarListaDeCategorias();
             }
         });
+
+        atualizarAutomaticamenteCheckBox.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                toggleAtualizarAutomatico(atualizarAutomaticamenteCheckBox.isSelected());
+            }
+        });
+        produtosLista.addMouseListener(new MouseAdapter() {
+        });
+    }
+
+    Thread atualizarAutomaticoThread;
+    void toggleAtualizarAutomatico(boolean automatico) {
+        if(atualizarAutomaticoThread != null){
+            atualizarAutomaticoThread.interrupt();
+            atualizarAutomaticoThread = null;
+        }
+
+        if(automatico) {
+
+            this.atualizarAutomaticoThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    atualizarRecorrente();
+                }
+            });
+            this.atualizarAutomaticoThread.start();;
+        }
     }
 
     public static void main(List<Produto> produtinhos,
@@ -165,9 +226,28 @@ public class ListarProdutos {
         // TODO: place custom component creation code here
         produtosLista = new JList();
         categoriasLista = new JList();
+        comboBoxPermissoes = new JComboBox();
+
+        ArrayList<String> todasPermissoes = PermissoesSingleton.getPermissoesSingleton().getTodasPermissoes();
+        List<ComboItem> comboItems = todasPermissoes.stream().map(x -> new ComboItem(x, x)).collect(Collectors.toList());
+        comboItems.forEach(x -> comboBoxPermissoes.addItem(x));
+        comboBoxPermissoes.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                ComboItem<String> item = (ComboItem<String>) comboBoxPermissoes.getSelectedItem();
+
+                PermissoesSingleton.getPermissoesSingleton().removeTodasPermissoes();
+                PermissoesSingleton.getPermissoesSingleton().adicionaPermissao(item.getKey());
+            }
+        });
+        comboBoxPermissoes.setSelectedIndex(todasPermissoes.indexOf(todasPermissoes.get(0)));
+
+        produtosLista.setModel(new DefaultListModel<String>());
+        categoriasLista.setModel(new DefaultListModel<String>());
 
         atualizarListaDeProdutos();
         atualizarListaDeCategorias();
+
     }
 
     public interface ListarProdutosAcao {

@@ -25,10 +25,10 @@ public class Principal {
 		Produto umProduto;
 		Categoria umaCategoria = null;
 
-		PermissoesSingleton.getPermissoesSingleton().adicionaPermissao(RoleAdmin.PERMISSAO);
+		//PermissoesSingleton.getPermissoesSingleton().adicionaPermissao(RoleAdmin.PERMISSAO);
 		PermissoesSingleton.getPermissoesSingleton().adicionaPermissao(RoleUser1.PERMISSAO);
-		PermissoesSingleton.getPermissoesSingleton().adicionaPermissao(RoleUser2.PERMISSAO);
-		PermissoesSingleton.getPermissoesSingleton().adicionaPermissao(RoleUser3.PERMISSAO);
+		//PermissoesSingleton.getPermissoesSingleton().adicionaPermissao(RoleUser2.PERMISSAO);
+		//PermissoesSingleton.getPermissoesSingleton().adicionaPermissao(RoleUser3.PERMISSAO);
 
 		@SuppressWarnings("resource")
 		ApplicationContext fabrica = new ClassPathXmlApplicationContext("beans-jpa.xml");

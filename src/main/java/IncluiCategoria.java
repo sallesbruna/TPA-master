@@ -38,6 +38,7 @@ public class IncluiCategoria {
                 String result = incluiCategoriaAcao.remover(c.getId());
                 if(result == null){
                     JOptionPane.showMessageDialog(null, "Produto removido com sucesso.");
+                    frame.setVisible(false);
                 } else {
                     JOptionPane.showMessageDialog(null, "Erro ao remover produto. " + result);
                 }
@@ -74,7 +75,7 @@ public class IncluiCategoria {
         categoriaNameTextField = new JTextField(name);
         removerCategoriaButton = new JButton();
 
-        removerCategoriaButton.setEnabled(id == 0);
+        removerCategoriaButton.setEnabled(id > 0);
     }
 
     public interface IncluiCategoriaAcao {

@@ -12,4 +12,10 @@
             <include within="*"/>
         </weaver>
     </aspects>
+    <aspects>
+        <aspect name="aspecto.AspectoParaControlePermissoes"/>
+        <weaver options="-verbose -showWeaveInfo">
+            <include within="*"/>
+        </weaver>
+    </aspects>
 </aspectj>
