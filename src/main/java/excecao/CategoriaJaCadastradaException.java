@@ -3,7 +3,7 @@ package excecao;
 import anotacao.ConstraintViolada;
 import anotacao.ExcecaoDeAplicacao;
 
-@ConstraintViolada(nome="MOTORISTA_NOME_UN")
+@ConstraintViolada(nome="CATEGORIA_NOME_UN")
 @ExcecaoDeAplicacao
 public class CategoriaJaCadastradaException extends RuntimeException
 {

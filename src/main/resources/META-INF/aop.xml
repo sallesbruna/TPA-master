@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<aspectj>
+    <aspects>
+        <aspect name="aspecto.AspectoParaLogDeErros"/>
+        <weaver options="-verbose -showWeaveInfo">
+            <include within="*"/>
+        </weaver>
+    </aspects>
+    <aspects>
+        <aspect name="aspecto.AspectoAround"/>
+        <weaver options="-verbose -showWeaveInfo">
+            <include within="*"/>
+        </weaver>
+    </aspects>
+</aspectj>
