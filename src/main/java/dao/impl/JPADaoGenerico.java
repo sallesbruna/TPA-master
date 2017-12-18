@@ -32,6 +32,7 @@ public class JPADaoGenerico<T, PK>
     {	
     	try 
         {	em.persist(o);
+            em.flush();
         }
         catch(RuntimeException e)
         {   throw new InfraestruturaException(e);
@@ -44,6 +45,7 @@ public class JPADaoGenerico<T, PK>
     {
         try 
         {	em.merge(o);
+            em.flush();
         }
         catch(RuntimeException e)
         {   throw new InfraestruturaException(e);
@@ -54,6 +56,7 @@ public class JPADaoGenerico<T, PK>
     { 
         try 
         {	em.remove(o);
+            em.flush();
         }
         catch(RuntimeException e)
         {   throw new InfraestruturaException(e);

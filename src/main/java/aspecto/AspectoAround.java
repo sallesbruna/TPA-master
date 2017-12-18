@@ -31,7 +31,7 @@ public class AspectoAround
 		listaDeNomesDeConstraints = new ArrayList<String>(map.keySet());
 	}
 	
-	@Pointcut("call(* service.*.*(..))")
+	@Pointcut("execution(* service.*.*(..))")
 	public void traduzExcecaoAround() {
 
 	}
@@ -41,6 +41,7 @@ public class AspectoAround
 	{
 		try
 		{
+			System.out.println("***************************************************");
 			return joinPoint.proceed();
 		}
 		catch(org.springframework.dao.DataAccessException e)
@@ -59,7 +60,7 @@ public class AspectoAround
 				
 				for(String nomeDeConstraint : listaDeNomesDeConstraints)
 				{
-					if(msg.indexOf(nomeDeConstraint) != -1)
+					if(msg.toUpperCase().indexOf(nomeDeConstraint) != -1)
 					{
 						throw (Exception)map.get(nomeDeConstraint).newInstance();
 					}

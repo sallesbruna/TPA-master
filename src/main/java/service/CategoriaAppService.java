@@ -86,10 +86,6 @@ public class CategoriaAppService
             throw new CategoriaNaoEncontradaException("Categoria com o id informado não encontrada.");
         }
 
-        if(categoria.getProdutos().size() > 0)
-        {
-            throw new InfraestruturaException("Existe produtos com esta categoria, não foi possível remover.");
-        }
 
         categoriaDAO.exclui(categoria);
     }

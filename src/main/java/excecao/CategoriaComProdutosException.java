@@ -3,7 +3,7 @@ package excecao;
 import anotacao.ConstraintViolada;
 import anotacao.ExcecaoDeAplicacao;
 
-@ConstraintViolada(nome="CARRO_MOTORISTA_FK")
+@ConstraintViolada(nome="PRODUTO_CATEGORIA_FK")
 @ExcecaoDeAplicacao
 public class CategoriaComProdutosException extends RuntimeException
 {

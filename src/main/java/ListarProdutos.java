@@ -228,6 +228,7 @@ public class ListarProdutos {
         categoriasLista = new JList();
         comboBoxPermissoes = new JComboBox();
 
+        ArrayList<String> permissoesVigentes = PermissoesSingleton.getPermissoesSingleton().getPermissoes();
         ArrayList<String> todasPermissoes = PermissoesSingleton.getPermissoesSingleton().getTodasPermissoes();
         List<ComboItem> comboItems = todasPermissoes.stream().map(x -> new ComboItem(x, x)).collect(Collectors.toList());
         comboItems.forEach(x -> comboBoxPermissoes.addItem(x));
@@ -240,7 +241,15 @@ public class ListarProdutos {
                 PermissoesSingleton.getPermissoesSingleton().adicionaPermissao(item.getKey());
             }
         });
-        comboBoxPermissoes.setSelectedIndex(todasPermissoes.indexOf(todasPermissoes.get(0)));
+        if(permissoesVigentes.size() > 0){
+            for(int i = 0; i < comboBoxPermissoes.getItemCount(); i++){
+                String item = ((ComboItem<String>) comboBoxPermissoes.getItemAt(i)).getKey();
+                String permissao = permissoesVigentes.get(0);
+                if(item.equals(permissao)){
+                    comboBoxPermissoes.setSelectedIndex(i);
+                }
+            }
+        }
 
         produtosLista.setModel(new DefaultListModel<String>());
         categoriasLista.setModel(new DefaultListModel<String>());
