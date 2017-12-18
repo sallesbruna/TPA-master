@@ -32,12 +32,16 @@ public class AspectoAround
 	}
 	
 	@Pointcut("call(* service.*.*(..))")
-	public void traduzExcecaoAround() {}
+	public void traduzExcecaoAround() {
+
+	}
 
 	@Around("traduzExcecaoAround()")
 	public Object traduzExcecaoAround(ProceedingJoinPoint joinPoint) throws Throwable 
-	{	try
-		{	return joinPoint.proceed();
+	{
+		try
+		{
+			return joinPoint.proceed();
 		}
 		catch(org.springframework.dao.DataAccessException e)
 		{	

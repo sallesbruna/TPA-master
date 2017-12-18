@@ -12,12 +12,12 @@ public interface CategoriaDAO extends DaoGenerico<Categoria, Long>
 {
 
     @RecuperaObjeto
-    Categoria recuperaUmaCategoria(long numero) throws CategoriaNaoEncontradaException;
+    Categoria recuperaUmaCategoria(long numero) throws ObjetoNaoEncontradoException;
 
     @RecuperaLista
     List<Categoria> recuperaCatetorias();
 
     @RecuperaObjeto
-    Categoria recuperaUmaCategoriaPorNome(String nome) throws CategoriaNaoEncontradaException;
+    Categoria recuperaUmaCategoriaPorNome(String nome) throws ObjetoNaoEncontradoException;
 
 }

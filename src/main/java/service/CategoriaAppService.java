@@ -49,7 +49,12 @@ public class CategoriaAppService
     @Transactional
     public void exclui(Long categoriaId) throws CategoriaNaoEncontradaException
     {
-        Categoria categoria = categoriaDAO.recuperaUmaCategoria(categoriaId);
+        Categoria categoria;
+        try{
+            categoria = categoriaDAO.recuperaUmaCategoria(categoriaId);
+        } catch (ObjetoNaoEncontradoException ex){
+            throw new CategoriaNaoEncontradaException("Categoria com o id informado não encontrada.");
+        }
 
         if(categoria.getProdutos().size() > 0)
         {
@@ -79,7 +84,11 @@ public class CategoriaAppService
 
 
     public Categoria recuperaCategoriaPorNome(String nome) throws CategoriaNaoEncontradaException {
-        return categoriaDAO.recuperaUmaCategoriaPorNome(nome);
+        try {
+            return categoriaDAO.recuperaUmaCategoriaPorNome(nome);
+        } catch (ObjetoNaoEncontradoException ex){
+            throw new CategoriaNaoEncontradaException("Categoria com o nome informado não encontrada");
+        }
     }
 
     @Transactional
@@ -99,7 +108,6 @@ public class CategoriaAppService
 
     public void excluiPorNome(String resposta) throws CategoriaNaoEncontradaException {
         Categoria c =  recuperaCategoriaPorNome(resposta);
-
         exclui(c.getId());
     }
 }

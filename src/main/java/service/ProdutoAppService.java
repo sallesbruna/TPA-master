@@ -77,7 +77,7 @@ public class ProdutoAppService
 		Categoria categoria;
 		try {
 			categoria = categoriaDAO.recuperaUmaCategoriaPorNome(nomeCategoria);
-		} catch (CategoriaNaoEncontradaException e) {
+		} catch (ObjetoNaoEncontradoException e) {
 			return new ArrayList<>();
 		}
 		List<Produto> produtos = produtoDAO.recuperaProdutos()

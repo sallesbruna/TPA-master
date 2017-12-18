@@ -17,7 +17,10 @@ public class AspectoParaLogDeErros
 	
 //	@Pointcut("execution(* visao..*.*(..)) || execution(visao..*.new(..))")
 	@Pointcut("call(* service..*.*(..))")
-	public void efetuaLogDeErro() {}
+	public void efetuaLogDeErro() {
+
+
+	}
 
 	@Around("efetuaLogDeErro()")
 	public Object efetuaLog(ProceedingJoinPoint joinPoint) throws Throwable 
@@ -56,6 +59,7 @@ public class AspectoParaLogDeErros
 					     "   Stack Trace: " + stackTrace);
 	    	
 	    	throw throwable;
+			//return null;
 		}
 	}
 }
