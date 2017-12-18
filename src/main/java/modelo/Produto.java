@@ -30,12 +30,17 @@ public class Produto
 	private String nome;
 	private Date dataVenda;
 	private Long categoria;
-	private String categoriaNome;
 
 	// ********* Construtores *********
 
 	public Produto()
 	{
+	}
+
+	public Produto(Long id, String nome, Long categoriaId){
+		this.id = id;
+		this.nome = nome;
+		this.categoria = categoriaId;
 	}
 
 	public static Produto criarProduto(String nome, Date dataCadastro, Long categoria){
@@ -113,22 +118,19 @@ public class Produto
 
 	@Override
 	public String toString(){
-		return "{ " +
-				"\n Número = " + getId() +
-				"\n Nome = " + getNome() +
-				"\n Data Cadastro = " + getDataCadastro() +
-				"\n Data Venda = " + getDataVenda() +
-				"\n }";
+		return "" +
+				"Produto ID = " + getId() +
+				", Nome = " + getNome() +
+				", Data Cadastro = " + getDataCadastro() +
+				//", Data Venda = " + getDataVenda() +
+				", Categoria ID = " + getCategoria() +
+				".";
 
 	}
 
 	@Transient
-    public String getCategoriaNome() {
-        return "asdf";
-    }
-
-	public void setCategoriaNome(String categoriaNome) {
-		this.categoriaNome = categoriaNome;
+	public boolean produtoJaCadastrado() {
+		return this.id > 0;
 	}
 }
 

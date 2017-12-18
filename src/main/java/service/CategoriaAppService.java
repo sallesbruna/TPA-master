@@ -10,6 +10,7 @@ import excecao.InfraestruturaException;
 import excecao.ObjetoNaoEncontradoException;
 import dao.CategoriaDAO;
 import modelo.Categoria;
+import modelo.Produto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,23 @@ public class CategoriaAppService
     public void setCategoriaDAO(CategoriaDAO categoriaDAO)
     {
         this.categoriaDAO = categoriaDAO;
+    }
+
+
+    @RoleAdmin
+    @Transactional
+    public Categoria incluiOuAltera(Long id, String categoriaNome) {
+        try {
+            Categoria c = categoriaDAO.getPorId(id);
+            c.setNome(categoriaNome);
+            categoriaDAO.altera(c);
+            return c;
+        } catch (ObjetoNaoEncontradoException e) {
+            Categoria c = new Categoria();
+            c.setNome(categoriaNome);
+            categoriaDAO.inclui(c);
+            return c;
+        }
     }
 
     @RoleAdmin
@@ -83,8 +101,10 @@ public class CategoriaAppService
     }
 
     @RoleUser1
-    public Categoria recuperaUmaCategoria(long numero) throws CategoriaNaoEncontradaException
+    public Categoria recuperaUmaCategoria(Long numero) throws CategoriaNaoEncontradaException
     {
+        if(numero == null || numero <= 0) return new Categoria();
+
         try
         {
             return categoriaDAO.getPorId(numero);

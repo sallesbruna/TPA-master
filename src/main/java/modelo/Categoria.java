@@ -70,9 +70,13 @@ public class Categoria {
 
     @Override
     public String toString(){
-        return "{ " +
-                "\n Número = " + getId()  +
-                "\n Nome = " + getNome() +
-                "\n }";
+        return "Categoria ID = " + getId()  +
+                ", Nome = " + getNome() +
+                ".";
+    }
+
+    public boolean jaCadastrada() {
+        return id > 0;
+
     }
 }

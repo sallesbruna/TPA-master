@@ -36,7 +36,98 @@ public class Principal {
 		ProdutoAppService produtoAppService = (ProdutoAppService) fabrica.getBean("produtoAppService");
 		CategoriaAppService categoriaAppService = (CategoriaAppService) fabrica.getBean("categoriaAppService");
 
-		boolean continua = true;
+
+        ListarProdutos.main(produtoAppService.recuperaProdutos(), categoriaAppService.recuperaCategorias(),
+                new ListarProdutos.ListarProdutosAcao() {
+
+                    @Override
+                    public List<Produto> getListaProdutos() {
+                        return produtoAppService.recuperaProdutos();
+                    }
+
+                    @Override
+                    public String visualizarProduto(Long produto) {
+                        try {
+                            Produto p = produtoAppService.recuperaUmProduto(produto);
+
+                            IncluiProduto.main(new IncluiProduto.IncluirProdutoAcao() {
+                                @Override
+                                public String salvar(Long id, String nome, Long categoriaId) {
+                                    try {
+                                        produtoAppService.incluiOuAltera(id, nome, categoriaId);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        return e.getMessage();
+                                    }
+                                    return null;
+                                }
+
+                                @Override
+                                public String remover(Long id) {
+
+                                    try {
+                                        produtoAppService.exclui(id);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        return e.getMessage();
+                                    }
+                                    return null;
+                                }
+
+                            }, p, categoriaAppService.recuperaCategorias());
+
+                            return null;
+                        } catch(Exception e){
+                            e.printStackTrace();
+                            return e.getMessage();
+                        }
+
+                    }
+
+                    @Override
+                    public List<Categoria> getListaCategorias() {
+                        return categoriaAppService.recuperaCategorias();
+                    }
+
+                    @Override
+                    public String visualizarCategoria(Long categoria) {
+                        try {
+                            IncluiCategoria.main(new IncluiCategoria.IncluiCategoriaAcao() {
+                                @Override
+                                public String salvar(Long id, String nome) {
+
+                                    try {
+                                        categoriaAppService.incluiOuAltera(id, nome);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        return e.getMessage();
+                                    }
+                                    return null;
+                                }
+
+                                @Override
+                                public String remover(Long id) {
+
+                                    try {
+                                        categoriaAppService.exclui(id);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        return e.getMessage();
+                                    }
+                                    return null;
+                                }
+
+                            }, categoriaAppService.recuperaUmaCategoria(categoria));
+
+                            return null;
+                        } catch(Exception ex){
+                            return ex.getMessage();
+                        }
+
+                    }
+                });
+
+		/*boolean continua = true;
 		while (continua) {
 			System.out.println("\n O que voce deseja fazer?");
 			System.out.println("\n 1. Cadastrar um produto");
@@ -54,31 +145,6 @@ public class Principal {
 
 			switch (opcao) {
 				case 1: {
-
-					IncluiProduto.main(new IncluiProduto.IncluirProdutoAcao() {
-						@Override
-						public boolean salvar(String produtoNome, String categoria) {
-							try{
-								String dataCadastro = Util.dateToStr(new java.sql.Date(new Date().getTime()));
-
-								Result<Categoria> categoriaResult = categoriaAppService.recuperaCategoriaPorNomeOuInsere(categoria);
-								if (categoriaResult.hasMessage()) {
-									System.out.println(categoriaResult.getMessage());
-								}
-								Categoria umaCategoria = categoriaResult.getPayload();
-								Produto umProduto = Produto.criarProduto(produtoNome, Util.strToDate(dataCadastro), umaCategoria.getId());
-
-								Produto numero = produtoAppService.inclui(umProduto);
-
-								return true;
-
-							} catch(Exception ex){
-								return false;
-							}
-
-						}
-					});
-
 					break;
 				}
 
@@ -183,37 +249,7 @@ public class Principal {
 				}
 
 				case 4: {
-					List<Produto> produtos = produtoAppService.recuperaProdutos();
-					ListarProdutos.main(produtos,
-							new ListarProdutos.ListarProdutosAcao() {
-								@Override
-								public List<Produto> Listar() {
 
-									return produtoAppService.recuperaProdutos();
-								}
-							},
-							new ListarProdutos.RemoverProdutoAcao() {
-								@Override
-								public boolean Remover(Long id) {
-									try {
-										produtoAppService.exclui(id);
-									} catch (ProdutoNaoEncontradoException e) {
-										return false;
-									}
-									return true;
-								}
-							},
-							new ListarProdutos.EditarProdutoAcao() {
-								@Override
-								public Produto Editar(Produto produto) {
-									try {
-										produtoAppService.altera(produto);
-									} catch(Exception ex){
-										return null;
-									}
-									return produto;
-								}
-							});
 
 					break;
 				}
@@ -285,10 +321,9 @@ public class Principal {
 
 				default:
 					System.out.println('\n' + "Opcao invalida!");
-			}
+			}*/
 
 
-		}
 
 
 	}
