@@ -55,7 +55,7 @@ public class ListarCategorias {
         frame.setContentPane(new ListarCategorias(listarCategoriasAcao, frame).panel1);
         frame.pack();
         frame.setVisible(true);
-        frame.setSize(500,150);
+        //frame.setSize(500,150);
         frame.setLocation(250, 250);
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE );
     }
