@@ -97,7 +97,15 @@ public class Principal {
                                 public String salvar(Long id, String nome) {
 
                                     try {
-                                        categoriaAppService.incluiOuAltera(id, nome);
+                                        if(id == 0){
+                                            Categoria c = new Categoria();
+                                            c.setNome(nome);
+                                            categoriaAppService.inclui(c);
+                                        } else{
+                                            Categoria c = categoriaAppService.recuperaUmaCategoria(id);
+                                            c.setNome(nome);
+                                            categoriaAppService.altera(c);
+                                        }
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                         return e.getMessage();

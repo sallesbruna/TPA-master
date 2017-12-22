@@ -18,7 +18,7 @@ public class AspectoParaControlePermissoes
 	private static Logger logger = null;
 	
 //	@Pointcut("execution(* visao..*.*(..)) || execution(visao..*.new(..))")
-	@Pointcut("call(* service..*.*(..))")
+	@Pointcut("execution(* service..*.*(..))")
 	public void efetuaControle() { }
 
 	@Around("efetuaControle()")

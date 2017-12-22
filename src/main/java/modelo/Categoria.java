@@ -44,7 +44,7 @@ public class Categoria {
         return id;
     }
 
-    @Column(name="NOME")
+    @Column(name="NOME", unique = true)
     public String getNome() {
         return nome;
     }

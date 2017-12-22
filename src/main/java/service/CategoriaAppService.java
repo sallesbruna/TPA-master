@@ -33,31 +33,9 @@ public class CategoriaAppService
 
     @RoleAdmin
     @Transactional
-    public Categoria incluiOuAltera(Long id, String categoriaNome) {
-        try {
-            Categoria c = categoriaDAO.getPorId(id);
-            c.setNome(categoriaNome);
-            categoriaDAO.altera(c);
-            return c;
-        } catch (ObjetoNaoEncontradoException e) {
-            Categoria c = new Categoria();
-            c.setNome(categoriaNome);
-            categoriaDAO.inclui(c);
-            return c;
-        }
-    }
-
-    @RoleAdmin
-    @Transactional
     public Categoria inclui(Categoria umaCategoria)
     {
-        try {
-            Categoria c = recuperaCategoriaPorNome(umaCategoria.getNome());
-        } catch (CategoriaNaoEncontradaException e) {
-            return categoriaDAO.inclui(umaCategoria);
-        }
-
-        throw new CategoriaJaCadastradaException();
+        return categoriaDAO.inclui(umaCategoria);
     }
 
     @RoleAdmin
