@@ -39,25 +39,6 @@ public class ProdutoAppService
 
 	@RoleAdmin
 	@Transactional
-	public Produto incluiOuAltera(Long id, String nome, Long categoriaId) {
-		try {
-			Produto produto = produtoDAO.recuperaUmProduto(id);
-			produto.setNome(nome);
-			produto.setCategoria(categoriaId);
-			produto.setDataCadastro(new Date(new java.util.Date().getTime()));
-			return produto;
-		} catch (ObjetoNaoEncontradoException e) {
-			Produto p = new Produto();
-			p.setNome(nome);
-			p.setCategoria(categoriaId);
-			p.setDataCadastro(new Date(new java.util.Date().getTime()));
-			produtoDAO.inclui(p);
-			return p;
-		}
-	}
-
-	@RoleAdmin
-	@Transactional
 	public Produto inclui(Produto umProduto) {
 		Produto p = produtoDAO.inclui(umProduto);
 		return p;
@@ -79,13 +60,9 @@ public class ProdutoAppService
 
 	@RoleUser1
 	public Produto recuperaUmProduto(Long numero) throws ProdutoNaoEncontradoException {
-		if(numero == null || numero <= 0) return new Produto();
-
 		try
 		{
-			Produto umProduto = produtoDAO.recuperaUmProduto(numero);
-			
-			return umProduto;
+			return produtoDAO.recuperaUmProduto(numero);
 		} 
 		catch(ObjetoNaoEncontradoException e)
 		{

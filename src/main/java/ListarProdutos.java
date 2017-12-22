@@ -5,8 +5,6 @@ import modelo.Produto;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
@@ -63,30 +61,28 @@ public class ListarProdutos {
         categoriasLista.setSelectedIndex(index);
     }
 
-    private void novoProduto(ListarProdutosAcao acao){
-        String message = acao.visualizarProduto(null);
+    private void novoProduto(ListarProdutosAcao acao, Categoria categoria){
+        String message = acao.visualizarNovoProduto(categoria.getId());
         if(message != null){
-            JOptionPane.showMessageDialog(null, "Não foi possível abrir produto. " + message);
+            JOptionPane.showMessageDialog(null, "Não foi possível criar produto. " + message);
         }
     }
 
     private void novaCategoria(ListarProdutosAcao acao){
-        String message = acao.visualizarCategoria(null);
+        String message = acao.novaCategoria();
         if(message != null){
             JOptionPane.showMessageDialog(null, "Não foi possível abrir categoria. " + message);
         }
     }
 
-    private void verProduto(List<Produto> produtinhos, ListarProdutosAcao acao, int index){
-        Produto p = produtinhos.get(index);
-        String message = acao.visualizarProduto(p.getId());
+    private void verProduto(ListarProdutosAcao acao, Produto p){
+        String message = acao.visualizarProdutoExistente(p.getId());
         if(message != null){
             JOptionPane.showMessageDialog(null, "Não foi possível abrir produto. " + message);
         }
     }
-    private void verCategoria(List<Categoria> categorias, ListarProdutosAcao acao, int index){
-        Categoria c = categorias.get(index);
-        String message = acao.visualizarCategoria(c.getId());
+    private void verCategoria(ListarProdutosAcao acao, Categoria c){
+        String message = acao.visualizarCategoriaExistente(c.getId());
         if(message != null){
             JOptionPane.showMessageDialog(null, "Não foi possível abrir categoria. " + message);
         }
@@ -123,7 +119,7 @@ public class ListarProdutos {
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
 
-                int index = produtosLista.getSelectedIndex();
+                int produtosListaSelectedIndex = produtosLista.getSelectedIndex();
 
                 try{
                     String selectedValue = (String) produtosLista.getSelectedValue();
@@ -132,15 +128,15 @@ public class ListarProdutos {
                         Long id = Long.parseLong(theId);
                         Optional<Produto> first = getProdutinhos().stream().filter(x -> x.getId().equals(id)).findFirst();
                         if(first.isPresent()){
-                            index = getProdutinhos().indexOf(first.get());
+                            produtosListaSelectedIndex = getProdutinhos().indexOf(first.get());
                         }
                     }
                 } catch(Exception ex){ }
 
-                if(index == -1){
+                if(produtosListaSelectedIndex == -1){
                     JOptionPane.showMessageDialog(null, "Nenhum produto selecionado.");
-                }else{
-                    verProduto(getProdutinhos(), listarProdutosAcao, index);
+                } else{
+                    verProduto(listarProdutosAcao, getProdutinhos().get(produtosListaSelectedIndex));
                     atualizarListaDeProdutos();
                 }
             }
@@ -151,8 +147,14 @@ public class ListarProdutos {
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
 
-                novoProduto(listarProdutosAcao);
-                atualizarListaDeProdutos();
+                int categoriasListaSelectedIndex = categoriasLista.getSelectedIndex();
+                if (categoriasListaSelectedIndex == -1) {
+                    JOptionPane.showMessageDialog(null, "Nenhuma categoria selecionada.");
+                } else {
+                    novoProduto(listarProdutosAcao, getCategorias().get(categoriasListaSelectedIndex));
+                    atualizarListaDeProdutos();
+                }
+
             }
         });
 
@@ -166,7 +168,7 @@ public class ListarProdutos {
                 if(index == -1){
                     JOptionPane.showMessageDialog(null, "Nenhuma categoria selecionada.");
                 }else{
-                    verCategoria(getCategorias(), listarProdutosAcao, index);
+                    verCategoria(listarProdutosAcao, getCategorias().get(index));
                     atualizarListaDeCategorias();
                 }
             }
@@ -218,7 +220,7 @@ public class ListarProdutos {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
-        frame.setSize(500,500);
+        //frame.setSize(500,500);
         frame.setLocation(250, 250);
     }
 
@@ -227,6 +229,8 @@ public class ListarProdutos {
         produtosLista = new JList();
         categoriasLista = new JList();
         comboBoxPermissoes = new JComboBox();
+        atualizarButton = new JButton();
+
 
         ArrayList<String> permissoesVigentes = PermissoesSingleton.getPermissoesSingleton().getPermissoes();
         ArrayList<String> todasPermissoes = PermissoesSingleton.getPermissoesSingleton().getTodasPermissoes();
@@ -256,14 +260,16 @@ public class ListarProdutos {
 
         atualizarListaDeProdutos();
         atualizarListaDeCategorias();
-
+        //toggleAtualizarAutomatico(atualizarAutomaticamenteCheckBox.isSelected());
     }
 
     public interface ListarProdutosAcao {
         List<Produto> getListaProdutos();
-        String visualizarProduto(Long produto);
+        String visualizarProdutoExistente(Long produto);
+        String visualizarNovoProduto(Long categoriaSelecionada);
         List<Categoria> getListaCategorias();
-        String visualizarCategoria(Long categoria);
+        String visualizarCategoriaExistente(Long categoria);
+        String novaCategoria();
     }
 
 
