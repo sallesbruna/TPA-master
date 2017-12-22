@@ -38,9 +38,8 @@ public class Principal {
                     }
 
                     @Override
-                    public String visualizarNovoProduto(Long categoriaSelecionada){
+                    public String visualizarNovoProduto(){
                         Produto p = new Produto();
-                        p.setCategoria(categoriaSelecionada);
 
                         IncluiProduto.main(new IncluiProduto.IncluirProdutoAcao() {
                             @Override
@@ -69,6 +68,23 @@ public class Principal {
                                     return e.getMessage();
                                 }
                                 return null;
+                            }
+
+                            @Override
+                            public void selecionaCategoriaId(ListarCategorias.CategoriaSelecionadaAcao categoriaSelecionadaAcao) {
+
+
+                                ListarCategorias.main(new ListarCategorias.ListarCategoriasAcao() {
+                                    @Override
+                                    public List<Categoria> getListaCategorias() {
+                                        return categoriaAppService.recuperaCategorias();
+                                    }
+
+                                    @Override
+                                    public void selecionaCategoria(Categoria categoria) {
+                                        categoriaSelecionadaAcao.onCategoriaSelecionada(categoria);
+                                    }
+                                });
                             }
 
                         }, p, categoriaAppService.recuperaCategorias());
@@ -110,6 +126,24 @@ public class Principal {
                                     }
                                     return null;
                                 }
+
+                                @Override
+                                public void selecionaCategoriaId(ListarCategorias.CategoriaSelecionadaAcao categoriaSelecionadaAcao) {
+
+
+                                    ListarCategorias.main(new ListarCategorias.ListarCategoriasAcao() {
+                                        @Override
+                                        public List<Categoria> getListaCategorias() {
+                                            return categoriaAppService.recuperaCategorias();
+                                        }
+
+                                        @Override
+                                        public void selecionaCategoria(Categoria categoria) {
+                                            categoriaSelecionadaAcao.onCategoriaSelecionada(categoria);
+                                        }
+                                    });
+                                }
+
 
                             }, p, categoriaAppService.recuperaCategorias());
 
@@ -203,6 +237,7 @@ public class Principal {
                         }
 
                     }
+
                 });
 
 

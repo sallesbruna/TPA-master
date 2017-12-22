@@ -61,8 +61,8 @@ public class ListarProdutos {
         categoriasLista.setSelectedIndex(index);
     }
 
-    private void novoProduto(ListarProdutosAcao acao, Categoria categoria){
-        String message = acao.visualizarNovoProduto(categoria.getId());
+    private void novoProduto(ListarProdutosAcao acao){
+        String message = acao.visualizarNovoProduto();
         if(message != null){
             JOptionPane.showMessageDialog(null, "Não foi possível criar produto. " + message);
         }
@@ -146,15 +146,8 @@ public class ListarProdutos {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-
-                int categoriasListaSelectedIndex = categoriasLista.getSelectedIndex();
-                if (categoriasListaSelectedIndex == -1) {
-                    JOptionPane.showMessageDialog(null, "Nenhuma categoria selecionada.");
-                } else {
-                    novoProduto(listarProdutosAcao, getCategorias().get(categoriasListaSelectedIndex));
+                    novoProduto(listarProdutosAcao);
                     atualizarListaDeProdutos();
-                }
-
             }
         });
 
@@ -227,9 +220,12 @@ public class ListarProdutos {
     private void createUIComponents() {
         // TODO: place custom component creation code here
         produtosLista = new JList();
+        produtosLista.setModel(new DefaultListModel<String>());
         categoriasLista = new JList();
+        categoriasLista.setModel(new DefaultListModel<String>());
         comboBoxPermissoes = new JComboBox();
         atualizarButton = new JButton();
+
 
 
         ArrayList<String> permissoesVigentes = PermissoesSingleton.getPermissoesSingleton().getPermissoes();
@@ -255,9 +251,6 @@ public class ListarProdutos {
             }
         }
 
-        produtosLista.setModel(new DefaultListModel<String>());
-        categoriasLista.setModel(new DefaultListModel<String>());
-
         atualizarListaDeProdutos();
         atualizarListaDeCategorias();
         //toggleAtualizarAutomatico(atualizarAutomaticamenteCheckBox.isSelected());
@@ -266,7 +259,7 @@ public class ListarProdutos {
     public interface ListarProdutosAcao {
         List<Produto> getListaProdutos();
         String visualizarProdutoExistente(Long produto);
-        String visualizarNovoProduto(Long categoriaSelecionada);
+        String visualizarNovoProduto();
         List<Categoria> getListaCategorias();
         String visualizarCategoriaExistente(Long categoria);
         String novaCategoria();

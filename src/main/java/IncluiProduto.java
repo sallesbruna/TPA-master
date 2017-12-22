@@ -2,6 +2,7 @@ import modelo.Categoria;
 import modelo.Produto;
 
 import javax.swing.*;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
@@ -15,6 +16,7 @@ public class IncluiProduto {
     private JButton salvarProdutoButton;
     private JButton removerProdutoButton;
     private JTextField categoriaTextField;
+    private JButton buscarCategoriaButton;
     private Produto p;
     private List<Categoria> categorias;
 
@@ -52,6 +54,24 @@ public class IncluiProduto {
             }
         });
 
+        buscarCategoriaButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+
+                acao.selecionaCategoriaId(new ListarCategorias.CategoriaSelecionadaAcao() {
+                    @Override
+                    public void onCategoriaSelecionada(Categoria categoria) {
+                        Long categoriaId = categoria.getId();
+                        if (categoriaId == -1) {
+                            JOptionPane.showMessageDialog(null, "Nenhuma categoria selecionada.");
+                        } else {
+                            categoriaTextField.setText(categoriaId.toString());
+                        }
+                    }
+                });
+            }
+        });
     }
 
     public static void main(IncluirProdutoAcao incluirProdutoAcao, Produto p, List<Categoria> categorias) {
@@ -96,6 +116,7 @@ public class IncluiProduto {
     public interface IncluirProdutoAcao {
         String salvar(Long id, String nome, Long categoriaId);
         String remover(Long id);
+        void selecionaCategoriaId(ListarCategorias.CategoriaSelecionadaAcao acao);
     }
 
 
